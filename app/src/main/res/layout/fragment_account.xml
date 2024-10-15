@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <!-- Biểu tượng răng cưa ở góc phải trên cùng -->
+    <ImageView
+        android:id="@+id/iv_settings"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_settings"
+        android:contentDescription="@string/settings"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:padding="8dp" />
+
+    <!-- Ảnh đại diện -->
+    <ImageView
+        android:id="@+id/iv_profile"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/default_profile"
+        android:layout_below="@id/iv_settings"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
+        android:contentDescription="@string/profile_image" />
+
+    <!-- Tên người dùng -->
+    <TextView
+        android:id="@+id/tv_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Username"
+        android:textSize="20sp"
+        android:textColor="@color/black"
+        android:layout_below="@id/iv_profile"
+        android:layout_marginTop="16dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp" />
+
+    <!-- Email người dùng -->
+    <TextView
+        android:id="@+id/tv_email"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Email"
+        android:layout_below="@id/tv_username"
+        android:textColor="@color/black"
+        android:layout_marginTop="8dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp" />
+
+    <!-- Số điện thoại -->
+    <TextView
+        android:id="@+id/tv_phone"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="SĐT"
+        android:layout_below="@id/tv_email"
+        android:textColor="@color/black"
+        android:layout_marginTop="8dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp" />
+
+    <!-- Nút sửa thông tin cá nhân -->
+    <Button
+        android:id="@+id/btn_edit_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Sửa thông tin"
+        android:background="@drawable/btn_custom"
+        android:textColor="@color/white"
+        android:layout_below="@id/tv_phone"
+        android:layout_marginTop="16dp"
+        android:padding="12dp" />
+
+    <!-- Nút đăng xuất -->
+    <Button
+        android:id="@+id/btn_logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Đăng xuất"
+        android:background="@drawable/btn_custom"
+        android:textColor="@color/white"
+        android:layout_below="@id/btn_edit_profile"
+        android:layout_marginTop="8dp"
+        android:padding="12dp" />
+
+</RelativeLayout>

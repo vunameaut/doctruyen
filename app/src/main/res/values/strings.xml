@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">doctruyen</string>
+    <string name="home_text">Home</string>
+    <string name="like_text">Like</string>
+    <string name="search_text">Search</string>
+    <string name="shop_text">Shop</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="dummy_button">Dummy Button</string>
+    <string name="dummy_content">DUMMY\nCONTENT</string>
+    <string name="settings">Cài đặt\n</string>
+    <string name="profile_image">ảnh đại diện</string>
+</resources>

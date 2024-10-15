@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "471473949706",
+    "firebase_url": "https://doctruyen-b3c21-default-rtdb.firebaseio.com",
+    "project_id": "doctruyen-b3c21",
+    "storage_bucket": "doctruyen-b3c21.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:471473949706:android:0c3b2c55d82d3e0797a3f3",
+        "android_client_info": {
+          "package_name": "com.hien.doctruyen"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAjTqoK3e83qCoDwnvorYrXlOA5uzdiaOg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

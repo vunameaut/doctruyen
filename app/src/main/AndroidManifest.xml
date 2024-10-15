@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="false" /> <!-- Quyền Internet -->
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- Quyền đọc ảnh cho Android 13 trở lên -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" /> <!-- Quyền đọc bộ nhớ ngoài cho Android dưới 13 -->
+    <uses-permission
+        android:name="android.permission.READ_EXTERNAL_STORAGE"
+        android:maxSdkVersion="32" />
+
+    <application
+        android:allowBackup="true"
+        android:dataExtractionRules="@xml/data_extraction_rules"
+        android:fullBackupContent="@xml/backup_rules"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:roundIcon="@mipmap/ic_launcher_round"
+        android:supportsRtl="true"
+        android:theme="@style/Theme.Doctruyen">
+        <activity
+            android:name=".admin.add_truyen"
+            android:exported="false" />
+        <activity
+            android:name=".detail.AdminStoryDetailActivity"
+            android:exported="false" />
+        <activity
+            android:name=".user.SettingsActivity"
+            android:exported="false" /> <!-- Các Activity của bạn -->
+        <activity
+            android:name=".user.ImageViewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
+        <activity
+            android:name=".user.HomeFragment"
+            android:exported="false" />
+        <activity
+            android:name=".user.main"
+            android:exported="false" />
+        <activity
+            android:name=".admin.ManageUsersFragment"
+            android:exported="false" />
+        <activity
+            android:name=".admin.ManageChaptersFragment"
+            android:exported="false" />
+        <activity
+            android:name=".admin.ManageStoriesFragment"
+            android:exported="false" />
+        <activity
+            android:name=".admin.AdminActivity"
+            android:exported="false" />
+        <activity
+            android:name=".signup"
+            android:exported="false" />
+        <activity
+            android:name=".login"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

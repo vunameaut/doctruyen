@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="aqua">#00FFFF</color> <!-- Aqua color -->
+    <color name="aqua_light">#8BFFFF</color> <!-- A lighter shade of Aqua -->
+    <color name="colorPrimary">#6200EE</color>
+    <color name="colorPrimaryDark">#3700B3</color>
+    <color name="colorAccent">#03DAC5</color>
+    <color name="blue">#2196F3</color>
+
+    <color name="primary">#6200EE</color>
+    <color name="primary_light">#BB86FC</color>
+    <color name="light_white">#D2D2D2</color>
+    <color name="card_1">#A3E4D7</color>
+    <color name="card_2">#F9E79F</color>
+    <color name="card_3">#D7BDE2</color>
+    <color name="card_4">#D2C3D8</color>
+    <color name="light_blue_600">#FF039BE5</color>
+    <color name="light_blue_900">#FF01579B</color>
+    <color name="light_blue_A200">#FF40C4FF</color>
+    <color name="light_blue_A400">#FF00B0FF</color>
+    <color name="black_overlay">#66000000</color>
+
+</resources>
