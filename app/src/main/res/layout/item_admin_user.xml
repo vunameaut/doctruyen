@@ -1,0 +1,35 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="16dp">
+
+    <ImageView
+        android:id="@+id/avatar_image"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:background="@drawable/ic_user"
+        android:contentDescription="@string/user_avatar_desc"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/username_text"/>
+
+    <TextView
+        android:id="@+id/username_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Username"
+        app:layout_constraintStart_toEndOf="@id/avatar_image"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/email_text"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="Email"
+        app:layout_constraintStart_toEndOf="@id/avatar_image"
+        app:layout_constraintTop_toBottomOf="@id/username_text"
+        app:layout_constraintEnd_toEndOf="parent"/>
+</androidx.constraintlayout.widget.ConstraintLayout>
