@@ -1,5 +1,6 @@
 package com.hien.doctruyen.item;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -18,7 +19,8 @@ public class Story {
     }
 
     // Constructor đầy đủ
-    public Story(String id, String title, String author, String description, List<String> genres, String imageUrl, Map<String, Chapter> chapters, String uid) {
+    public Story(String id, String title, String author, String description, List<String> genres,
+                 String imageUrl, Map<String, Chapter> chapters, String uid) {
         this.id = id;
         this.title = title;
         this.author = author;
@@ -62,12 +64,26 @@ public class Story {
         this.description = description;
     }
 
+    // Kiểm tra và chuyển đổi genres nếu cần
     public List<String> getGenres() {
+        if (genres == null) {
+            genres = new ArrayList<>();
+        }
         return genres;
     }
 
-    public void setGenres(List<String> genres) {
-        this.genres = genres;
+    public void setGenres(Object genres) {
+        // Nếu dữ liệu là String, chuyển nó thành List<String>
+        if (genres instanceof String) {
+            List<String> genreList = new ArrayList<>();
+            genreList.add((String) genres);
+            this.genres = genreList;
+        } else if (genres instanceof List) {
+            // Nếu đã là List<String>, gán trực tiếp
+            this.genres = (List<String>) genres;
+        } else {
+            this.genres = new ArrayList<>();
+        }
     }
 
     public String getImageUrl() {

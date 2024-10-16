@@ -52,13 +52,16 @@ public class AdminStoryAdapter extends RecyclerView.Adapter<AdminStoryAdapter.St
                 : "Không rõ thể loại";
         holder.tvGenres.setText(genres);
 
-        // Pass data to AdminStoryDetailActivity on item click
+        // Bắt sự kiện click vào item và truyền dữ liệu đầy đủ sang AdminStoryDetailActivity
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, AdminStoryDetailActivity.class);
             intent.putExtra("story_id", story.getId());
             intent.putExtra("story_title", story.getTitle());
             intent.putExtra("story_author", story.getAuthor());
+            intent.putExtra("story_genre", genres);
             intent.putExtra("story_description", story.getDescription());
+            intent.putExtra("story_image_url", story.getImageUrl());  // Truyền thêm URL của ảnh
+
             context.startActivity(intent);
         });
     }

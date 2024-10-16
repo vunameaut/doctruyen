@@ -1,20 +1,47 @@
 package com.hien.doctruyen.detail;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
 import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.ImageView;
+import android.widget.Toast;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.hien.doctruyen.R;
+import com.squareup.picasso.Picasso;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class AdminStoryDetailActivity extends AppCompatActivity {
 
-    private EditText titleEditText, authorEditText, descriptionEditText;
+    private static final int PICK_IMAGE_REQUEST = 1;
+
+    private EditText titleEditText, authorEditText, genreEditText, descriptionEditText;
     private Button saveButton, deleteButton;
+    private ImageView avatarImageView;
+    private ImageButton btnBack;
+
     private DatabaseReference storyRef;
+    private StorageReference storageRef;
     private String storyId;
+    private Uri avatarUri;
+
+    // Biến lưu trữ dữ liệu ban đầu
+    private String initialTitle, initialAuthor, initialGenre, initialDescription;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,47 +51,137 @@ public class AdminStoryDetailActivity extends AppCompatActivity {
         // Ánh xạ các view từ layout
         titleEditText = findViewById(R.id.edit_text_title);
         authorEditText = findViewById(R.id.edit_text_author);
+        genreEditText = findViewById(R.id.edit_text_genre);
         descriptionEditText = findViewById(R.id.edit_text_description);
+        avatarImageView = findViewById(R.id.avatar_image_view);
+        btnBack = findViewById(R.id.btn_back);
         saveButton = findViewById(R.id.button_save);
         deleteButton = findViewById(R.id.button_delete);
 
+        // Khởi tạo tham chiếu Firebase
+        storyRef = FirebaseDatabase.getInstance().getReference("stories");
+        storageRef = FirebaseStorage.getInstance().getReference("avatars");
+
         // Nhận dữ liệu từ Intent
         storyId = getIntent().getStringExtra("story_id");
-
-        // Kiểm tra xem storyId có null không
         if (storyId == null) {
             Log.e("AdminStoryDetail", "Story ID is null");
-            finish();  // Đóng Activity nếu không có ID
+            finish();
             return;
         }
 
-        String storyTitle = getIntent().getStringExtra("story_title");
-        String storyAuthor = getIntent().getStringExtra("story_author");
-        String storyDescription = getIntent().getStringExtra("story_description");
+        // Lấy thông tin câu chuyện từ Intent
+        initialTitle = getIntent().getStringExtra("story_title");
+        initialAuthor = getIntent().getStringExtra("story_author");
+        initialGenre = getIntent().getStringExtra("story_genre");
+        initialDescription = getIntent().getStringExtra("story_description");
+        String storyImageUrl = getIntent().getStringExtra("story_image_url");
 
-        // Hiển thị dữ liệu truyện lên các EditText
-        titleEditText.setText(storyTitle);
-        authorEditText.setText(storyAuthor);
-        descriptionEditText.setText(storyDescription);
+        // Hiển thị dữ liệu trên các trường
+        titleEditText.setText(initialTitle);
+        authorEditText.setText(initialAuthor);
+        genreEditText.setText(initialGenre);
+        descriptionEditText.setText(initialDescription);
 
-        // Khởi tạo tham chiếu Firebase
-        storyRef = FirebaseDatabase.getInstance().getReference("stories").child(storyId);
+        // Hiển thị ảnh bìa (avatar) bằng Picasso
+        if (storyImageUrl != null && !storyImageUrl.isEmpty()) {
+            Picasso.get().load(storyImageUrl).into(avatarImageView);
+        }
 
-        // Xử lý sự kiện nút lưu và nút xóa
-        saveButton.setOnClickListener(v -> {
-            String updatedTitle = titleEditText.getText().toString();
-            String updatedAuthor = authorEditText.getText().toString();
-            String updatedDescription = descriptionEditText.getText().toString();
+        // Chọn ảnh mới từ bộ sưu tập
+        avatarImageView.setOnClickListener(v -> openFileChooser());
 
-            storyRef.child("title").setValue(updatedTitle);
-            storyRef.child("author").setValue(updatedAuthor);
-            storyRef.child("description").setValue(updatedDescription);
-        });
+        // Xử lý sự kiện lưu
+        saveButton.setOnClickListener(v -> saveStoryDetails());
 
+        // Xử lý sự kiện xóa
         deleteButton.setOnClickListener(v -> {
-            storyRef.removeValue();
+            storyRef.child(storyId).removeValue();
             finish();
         });
+
+        // Xử lý sự kiện quay lại với hộp thoại xác nhận
+        btnBack.setOnClickListener(v -> onBackPressed());
     }
 
+    @Override
+    public void onBackPressed() {
+        if (isStoryModified()) {
+            // Hiển thị hộp thoại xác nhận nếu có thay đổi
+            showConfirmDialog();
+        } else {
+            super.onBackPressed();
+        }
+    }
+
+    // Mở bộ sưu tập ảnh
+    private void openFileChooser() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        startActivityForResult(Intent.createChooser(intent, "Chọn ảnh bìa"), PICK_IMAGE_REQUEST);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
+            avatarUri = data.getData();
+            avatarImageView.setImageURI(avatarUri);
+        }
+    }
+
+    // Kiểm tra xem dữ liệu có thay đổi không
+    private boolean isStoryModified() {
+        return !titleEditText.getText().toString().equals(initialTitle) ||
+                !authorEditText.getText().toString().equals(initialAuthor) ||
+                !genreEditText.getText().toString().equals(initialGenre) ||
+                !descriptionEditText.getText().toString().equals(initialDescription) ||
+                avatarUri != null;
+    }
+
+    // Hiển thị hộp thoại xác nhận thoát
+    private void showConfirmDialog() {
+        new AlertDialog.Builder(this)
+                .setTitle("Thoát mà không lưu?")
+                .setMessage("Bạn có muốn lưu các thay đổi trước khi thoát?")
+                .setPositiveButton("Lưu và thoát", (dialog, which) -> {
+                    saveStoryDetails();
+                    finish();
+                })
+                .setNegativeButton("Không lưu", (dialog, which) -> finish())
+                .setNeutralButton("Hủy", (dialog, which) -> dialog.dismiss())
+                .show();
+    }
+
+    // Lưu thông tin truyện vào Firebase
+    private void saveStoryDetails() {
+        String updatedTitle = titleEditText.getText().toString();
+        String updatedAuthor = authorEditText.getText().toString();
+        String updatedGenre = genreEditText.getText().toString();
+        String updatedDescription = descriptionEditText.getText().toString();
+
+        // Cập nhật dữ liệu vào Firebase Database
+        Map<String, Object> storyUpdates = new HashMap<>();
+        storyUpdates.put("title", updatedTitle);
+        storyUpdates.put("author", updatedAuthor);
+        storyUpdates.put("genres", updatedGenre);
+        storyUpdates.put("description", updatedDescription);
+
+        if (avatarUri != null) {
+            StorageReference fileRef = storageRef.child(storyId + ".jpg");
+            fileRef.putFile(avatarUri).addOnSuccessListener(taskSnapshot -> {
+                fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
+                    storyUpdates.put("imageUrl", uri.toString());
+                    storyRef.child(storyId).updateChildren(storyUpdates);
+                    Toast.makeText(this, "Lưu thành công!", Toast.LENGTH_SHORT).show();
+                });
+            }).addOnFailureListener(e -> {
+                Toast.makeText(this, "Lỗi khi tải ảnh lên!", Toast.LENGTH_SHORT).show();
+            });
+        } else {
+            storyRef.child(storyId).updateChildren(storyUpdates);
+            Toast.makeText(this, "Lưu thành công!", Toast.LENGTH_SHORT).show();
+        }
+    }
 }

@@ -22,7 +22,6 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.hien.doctruyen.login;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -68,12 +67,17 @@ public class ManageStoriesFragment extends Fragment {
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 storyList.clear();
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                    Story story = snapshot.getValue(Story.class);
-                    if (story != null) {
-                        storyList.add(story);
-                        Log.d(TAG, "Title: " + story.getTitle());
-                        Log.d(TAG, "Author: " + story.getAuthor());
-                        Log.d(TAG, "Genres: " + story.getGenres());
+                    try {
+                        Story story = snapshot.getValue(Story.class);
+                        if (story != null) {
+                            // Ghi log các thuộc tính để kiểm tra
+                            Log.d(TAG, "Title: " + story.getTitle());
+                            Log.d(TAG, "Author: " + story.getAuthor());
+                            Log.d(TAG, "Genres: " + story.getGenres());
+                            storyList.add(story);
+                        }
+                    } catch (Exception e) {
+                        Log.e(TAG, "Error parsing story: " + e.getMessage());
                     }
                 }
                 storyAdapter.updateList(storyList);
@@ -85,6 +89,7 @@ public class ManageStoriesFragment extends Fragment {
             }
         });
     }
+
 
     private void setupSearchView() {
         searchView.setQueryHint("Tìm kiếm truyện");
@@ -108,5 +113,4 @@ public class ManageStoriesFragment extends Fragment {
         Intent intent = new Intent(getActivity(), add_truyen.class);
         startActivity(intent);
     }
-
 }
