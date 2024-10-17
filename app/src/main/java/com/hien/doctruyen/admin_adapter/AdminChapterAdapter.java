@@ -68,9 +68,11 @@ public class AdminChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             Story story = (Story) filteredList.get(position);
             ((StoryViewHolder) holder).tvTitle.setText(story.getTitle());
 
-            // Khi nhấn vào story, tải danh sách các chương
+            // Khi nhấn vào Story, mở ChapterListActivity
             holder.itemView.setOnClickListener(v -> {
-                loadChaptersFromFirebase(story.getUid());  // Tải danh sách chương
+                Intent intent = new Intent(context, ChapterListActivity.class);
+                intent.putExtra("story_id", story.getUid());  // Truyền storyId vào Intent
+                context.startActivity(intent);
             });
 
         } else if (holder instanceof ChapterViewHolder) {
@@ -78,7 +80,7 @@ public class AdminChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             ((ChapterViewHolder) holder).tvTitle.setText(chapter.getTitle());
             ((ChapterViewHolder) holder).tvNumberOfWords.setText(String.valueOf(chapter.getNumberOfWords()) + " từ");
 
-            // Khi nhấn vào chapter, mở ChapterListActivity
+            // Khi nhấn vào Chapter, mở ChapterListActivity (hoặc màn hình khác nếu cần)
             holder.itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(context, ChapterListActivity.class);
                 intent.putExtra("chapter_title", chapter.getTitle());
@@ -88,6 +90,7 @@ public class AdminChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             });
         }
     }
+
 
     @Override
     public int getItemCount() {
@@ -99,6 +102,7 @@ public class AdminChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.filteredList = new ArrayList<>(newList);
         notifyDataSetChanged();
     }
+
 
     @Override
     public Filter getFilter() {
@@ -165,6 +169,7 @@ public class AdminChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             }
         });
     }
+
 
 
     // ViewHolder cho Story
