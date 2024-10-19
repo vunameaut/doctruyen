@@ -10,5 +10,8 @@
     <string name="dummy_content">DUMMY\nCONTENT</string>
     <string name="settings">Cài đặt\n</string>
     <string name="profile_image">ảnh đại diện</string>
-    <string name="user_avatar_desc">avatar\n</string>
+    <string name="user_avatar_desc">Hình đại diện người dùng</string>
+    <string name="block_user_desc">Khóa người dùng</string>
+    <string name="delete_user_desc">Xóa người dùng</string>
+
 </resources>
