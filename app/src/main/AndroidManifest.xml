@@ -20,7 +20,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Doctruyen">
-
+        <activity
+            android:name=".admin.AddChapterActivity"
+            android:exported="false" />
+        <activity
+            android:name=".admin.EditChapterActivity"
+            android:exported="false" />
         <activity
             android:name=".admin.add_truyen"
             android:exported="false"
@@ -65,7 +70,6 @@
             android:name=".signup"
             android:exported="false"
             android:screenOrientation="portrait" />
-
         <activity
             android:name=".admin.ChapterListActivity"
             android:exported="false" />

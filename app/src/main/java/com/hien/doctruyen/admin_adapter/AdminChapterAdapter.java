@@ -15,6 +15,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.hien.doctruyen.R;
 import com.hien.doctruyen.admin.ChapterListActivity;
+import com.hien.doctruyen.admin.EditChapterActivity;
 import com.hien.doctruyen.item.Chapter;
 import com.hien.doctruyen.item.Story;
 
@@ -71,26 +72,30 @@ public class AdminChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             // Khi nhấn vào Story, mở ChapterListActivity
             holder.itemView.setOnClickListener(v -> {
                 Intent intent = new Intent(context, ChapterListActivity.class);
-                intent.putExtra("story_id", story.getUid());  // Truyền storyId vào Intent
+                intent.putExtra("story_uid", story.getUid());  // Truyền storyId (UID)
+                Log.d("AdminChapterAdapter", "Story UID: " + story.getUid());  // Log UID của truyện
                 context.startActivity(intent);
             });
 
-        } else if (holder instanceof ChapterViewHolder) {
+        }else if (holder instanceof ChapterViewHolder) {
             Chapter chapter = (Chapter) filteredList.get(position);
             ((ChapterViewHolder) holder).tvTitle.setText(chapter.getTitle());
-            ((ChapterViewHolder) holder).tvNumberOfWords.setText(String.valueOf(chapter.getNumberOfWords()) + " từ");
+            ((ChapterViewHolder) holder).tvAuthor.setText(chapter.getAuthor());
+            ((ChapterViewHolder) holder).tvGenre.setText(chapter.getGenre());
 
-            // Khi nhấn vào Chapter, mở ChapterListActivity (hoặc màn hình khác nếu cần)
             holder.itemView.setOnClickListener(v -> {
-                Intent intent = new Intent(context, ChapterListActivity.class);
+                Intent intent = new Intent(context, EditChapterActivity.class);
+                intent.putExtra("chapter_id", chapter.getChapterId());
+                intent.putExtra("story_id", chapter.getStoryId());  // Truyền cả storyId
                 intent.putExtra("chapter_title", chapter.getTitle());
                 intent.putExtra("chapter_content", chapter.getContent());
-                intent.putExtra("chapter_number_of_words", chapter.getNumberOfWords());
+                intent.putExtra("chapter_author", chapter.getAuthor());
+                intent.putExtra("chapter_genre", chapter.getGenre());
                 context.startActivity(intent);
             });
         }
-    }
 
+    }
 
     @Override
     public int getItemCount() {
@@ -102,7 +107,6 @@ public class AdminChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.filteredList = new ArrayList<>(newList);
         notifyDataSetChanged();
     }
-
 
     @Override
     public Filter getFilter() {
@@ -170,8 +174,6 @@ public class AdminChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         });
     }
 
-
-
     // ViewHolder cho Story
     public static class StoryViewHolder extends RecyclerView.ViewHolder {
         TextView tvTitle;
@@ -184,12 +186,13 @@ public class AdminChapterAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     // ViewHolder cho Chapter
     public static class ChapterViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTitle, tvNumberOfWords;
+        TextView tvTitle, tvAuthor, tvGenre;
 
         public ChapterViewHolder(@NonNull View itemView) {
             super(itemView);
             tvTitle = itemView.findViewById(R.id.txt_chapter_title);
-            tvNumberOfWords = itemView.findViewById(R.id.txt_chapter_number_of_words);
+            tvAuthor = itemView.findViewById(R.id.txt_chapter_author);
+            tvGenre = itemView.findViewById(R.id.txt_chapter_genre);
         }
     }
 }

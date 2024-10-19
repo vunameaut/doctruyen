@@ -1,57 +1,43 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:padding="16dp">
+    android:fitsSystemWindows="true"
+    tools:context=".admin.ChapterListActivity">
 
-    <!-- Sửa ID của Toolbar thành 'toolbar' -->
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/card_1"
-        android:elevation="4dp"
-        android:titleTextColor="@android:color/white" />
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        android:elevation="4dp"/>
 
-    <ScrollView
+    <LinearLayout
+        android:id="@+id/linearLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="16dp">
+        android:orientation="vertical"
+        android:padding="8dp">
 
-        <LinearLayout
+        <!-- RecyclerView để hiển thị danh sách chương -->
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_view_chapters"
             android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="66dp"
+            android:layout_weight="1"
+            android:padding="16dp" />
+
+        <!-- ImageView để thêm chương mới nằm ở dưới cùng -->
+        <ImageView
+            android:id="@+id/img_add_chapter"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/txt_chapter_title"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:textSize="18sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/txt_chapter_number_of_words"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:textSize="14sp" />
-
-            <TextView
-                android:id="@+id/txt_chapter_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:textSize="16sp" />
-            <Button
-                android:id="@+id/btn_add_chapter"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Thêm Chương"
-                android:layout_gravity="end"
-                android:layout_margin="16dp" />
-
-        </LinearLayout>
-
-    </ScrollView>
-</LinearLayout>
+            android:layout_gravity="end"
+            android:layout_margin="16dp"
+            android:contentDescription="Add Chapter"
+            android:src="@drawable/ic_add" />
+    </LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
