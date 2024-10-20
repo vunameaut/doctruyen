@@ -8,26 +8,14 @@
     android:clickable="true"
     android:focusable="true">
 
-    <!-- Tiêu đề chương -->
-<TextView
-android:id="@+id/tv_chapter_title"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:text="Tiêu đề chương"
-android:textStyle="bold"
-android:textSize="16sp"
-android:textColor="@android:color/black" />
+    <!-- TextView hiển thị tiêu đề chương -->
+    <TextView
+        android:id="@+id/tv_chapter_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Tiêu đề chương"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:textColor="@android:color/black" />
 
-    <!-- Nội dung chương (có thể hiển thị một phần hoặc giới hạn) -->
-<TextView
-android:id="@+id/tv_chapter_content"
-android:layout_width="wrap_content"
-android:layout_height="wrap_content"
-android:maxLines="2"
-android:ellipsize="end"
-android:text="Nội dung chương..."
-android:textSize="14sp"
-android:textColor="@android:color/darker_gray"
-android:paddingTop="4dp" />
-
-    </LinearLayout>
+</LinearLayout>

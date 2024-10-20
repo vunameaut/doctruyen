@@ -18,21 +18,21 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.ChapterV
 
     public ChapterAdapter(List<Chapter> chapterList, Context context) {
         this.chapterList = chapterList;
-        this.context = context;
+        this.context = context;  // Đảm bảo context được khởi tạo
     }
 
     @NonNull
     @Override
     public ChapterViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.user_item_chapter, parent, false);
+        // Sử dụng context từ parent thay vì context truyền vào
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.user_item_chapter, parent, false);
         return new ChapterViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull ChapterViewHolder holder, int position) {
         Chapter chapter = chapterList.get(position);
-        holder.tvTitle.setText(chapter.getTitle());
-        holder.tvContent.setText(chapter.getContent());
+        holder.tvTitle.setText(chapter.getTitle());  // Hiển thị chỉ tiêu đề chương
     }
 
     @Override
@@ -41,12 +41,11 @@ public class ChapterAdapter extends RecyclerView.Adapter<ChapterAdapter.ChapterV
     }
 
     public static class ChapterViewHolder extends RecyclerView.ViewHolder {
-        TextView tvTitle, tvContent;
+        TextView tvTitle;
 
         public ChapterViewHolder(@NonNull View itemView) {
             super(itemView);
-            tvTitle = itemView.findViewById(R.id.tv_chapter_title);
-            tvContent = itemView.findViewById(R.id.tv_chapter_content);
+            tvTitle = itemView.findViewById(R.id.tv_chapter_title);  // Ánh xạ đến TextView tiêu đề
         }
     }
 }
