@@ -42,6 +42,24 @@
             android:exported="false"
             android:screenOrientation="portrait" />
         <activity
+            android:name=".user.Settings.HoTro"
+            android:exported="false" />
+        <activity
+            android:name=".user.Settings.TKvaBM"
+            android:exported="false" />
+        <activity
+            android:name=".user.Settings.ThongBao"
+            android:exported="false" />
+        <activity
+            android:name=".user.Settings.GioiThieu"
+            android:exported="false" />
+        <activity
+            android:name=".user.Settings.CongDong"
+            android:exported="false" />
+        <activity
+            android:name=".user.Settings.DieuKhoan"
+            android:exported="false" />
+        <activity
             android:name=".user.ImageViewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />

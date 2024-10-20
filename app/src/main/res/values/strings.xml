@@ -13,5 +13,35 @@
     <string name="user_avatar_desc">Hình đại diện người dùng</string>
     <string name="block_user_desc">Khóa người dùng</string>
     <string name="delete_user_desc">Xóa người dùng</string>
+    <string name="setting">Cài Đặt</string>
+    <string name="notification">Thông Báo</string>
+    <string name="accountsecurity"><![CDATA[Tài khoản & bảo mật]]></string>
+    <string name="language">Ngôn ngữ</string>
+    <string name="support">Trung tâm hỗ trợ</string>
+    <string name="community">Tiêu chuẩn cộng đồng</string>
+    <string name="clause">Điều khoản</string>
+    <string name="introduce">Giới thiệu</string>
+    <string name="logout">Đăng xuất</string>
+    <string name="notifiApp">Thông báo ứng dụng</string>
+    <string name="TBmail">Thông báo về email</string>
+    <string name="pay">Thanh toán</string>
+    <string name="product_image">ảnh sản phẩm\n</string>
+    <string name="ChangePass">Đổi mật khẩu</string>
+    <string name="logo">logo\n</string>
+
+    <string name="profile">Hồ sơ cá nhân</string>
+    <string name="notUpdate">Chưa cập nhật</string>
+    <string name="cancel">Hủy</string>
+    <string name="save">Lưu</string>
+    <string name="description">Mô tả</string>
+    <string name="send">Gửi</string>
+    <string name="select_image">Chọn ảnh</string>
+    <string name="delAcc">Xóa tài khoản</string>
+    <string name="forgotPass">Quên mật khẩu?</string>
+    <string name="rememberMe">Nhớ đăng nhập</string>
+    <string name="username">Tên</string>
+    <string name="email">Email</string>
+    <string name="phone_number">Số điện thoại\n</string>
+    <string name="address">Địa chỉ</string>
 
 </resources>
