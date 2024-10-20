@@ -1,6 +1,8 @@
 package com.hien.doctruyen.item;
 
-public class Chapter {
+import java.io.Serializable;
+
+public class Chapter implements Serializable {
     private String title;           // Tiêu đề chương
     private String content;         // Nội dung chương
     private int numberOfWords;      // Số từ của chương
@@ -104,7 +106,6 @@ public class Chapter {
         this.storyId = storyId;
     }
 
-    // Getter và Setter cho thuộc tính uid
     public String getUid() {
         return uid;
     }

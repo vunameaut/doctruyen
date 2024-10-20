@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class Story {
+import java.io.Serializable;
+
+public class Story implements Serializable {
     private String id;              // ID của truyện
     private String title;           // Tiêu đề truyện
     private String author;          // Tác giả truyện

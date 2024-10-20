@@ -1,6 +1,7 @@
 package com.hien.doctruyen.user_adapter;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +12,7 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.hien.doctruyen.R;
+import com.hien.doctruyen.user.StoryDetailActivity;
 import com.hien.doctruyen.item.Story;
 import com.squareup.picasso.Picasso;
 
@@ -19,7 +21,7 @@ import java.util.List;
 public class userStoryAdapter extends RecyclerView.Adapter<userStoryAdapter.StoryViewHolder> {
 
     private List<Story> storyList;
-    private Context context;  // Cần để dùng Picasso
+    private Context context;
 
     // Constructor
     public userStoryAdapter(List<Story> storyList, Context context) {
@@ -46,9 +48,16 @@ public class userStoryAdapter extends RecyclerView.Adapter<userStoryAdapter.Stor
         // Dùng Picasso để tải ảnh bìa từ URL
         Picasso.get()
                 .load(story.getImageUrl())
-                .placeholder(R.drawable.ic_placeholder)  // Ảnh mặc định khi chưa tải xong
-                .error(R.drawable.ic_erro)  // Ảnh lỗi nếu không tải được
+                .placeholder(R.drawable.ic_placeholder)
+                .error(R.drawable.ic_erro)
                 .into(holder.ivCover);
+
+        // Xử lý sự kiện nhấn vào item
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, StoryDetailActivity.class);
+            intent.putExtra("story", story);  // Truyền dữ liệu truyện qua Intent
+            context.startActivity(intent);
+        });
     }
 
     @Override
@@ -56,13 +65,11 @@ public class userStoryAdapter extends RecyclerView.Adapter<userStoryAdapter.Stor
         return storyList.size();
     }
 
-    // Cập nhật danh sách khi tìm kiếm
     public void updateList(List<Story> filteredList) {
         storyList = filteredList;
         notifyDataSetChanged();
     }
 
-    // ViewHolder để giữ các thành phần giao diện của mỗi item
     public static class StoryViewHolder extends RecyclerView.ViewHolder {
 
         ImageView ivCover;
@@ -70,7 +77,7 @@ public class userStoryAdapter extends RecyclerView.Adapter<userStoryAdapter.Stor
 
         public StoryViewHolder(@NonNull View itemView) {
             super(itemView);
-            ivCover = itemView.findViewById(R.id.iv_story_cover);
+            ivCover = itemView.findViewById(R.id.iv_story_cover);  // sửa thành id mới
             tvTitle = itemView.findViewById(R.id.tv_story_title);
             tvAuthor = itemView.findViewById(R.id.tv_story_author);
             tvGenres = itemView.findViewById(R.id.tv_story_genres);

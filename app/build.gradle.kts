@@ -40,6 +40,7 @@ dependencies {
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
+    implementation ("com.github.marlonlom:timeago:4.0.3")
     implementation ("com.google.android.material:material:1.6.0")
     implementation ("com.google.android.material:material:1.10.0")
     implementation ("com.squareup.picasso:picasso:2.71828")
