@@ -49,6 +49,8 @@ public class ChapterDetailActivity extends AppCompatActivity {
         // Lấy dữ liệu từ Intent
         story = (Story) getIntent().getSerializableExtra("story");
         currentChapterIndex = getIntent().getIntExtra("chapterIndex", 0);  // Lấy chỉ số chương từ Intent
+        userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+        userRef = FirebaseDatabase.getInstance().getReference("users").child(userId).child("reading_progress").child(story.getId());
 
         // Lấy các chương từ Firebase và lưu vào chapterList
         if (story != null) {
@@ -68,6 +70,7 @@ public class ChapterDetailActivity extends AppCompatActivity {
             if (currentChapterIndex > 0) {
                 currentChapterIndex--;
                 loadChapter(currentChapterIndex);
+                saveReadingProgress(currentChapterIndex, 0);  // Lưu tiến trình đọc, vị trí bắt đầu = 0
             }
         });
 
@@ -76,13 +79,13 @@ public class ChapterDetailActivity extends AppCompatActivity {
             if (currentChapterIndex < chapterList.size() - 1) {
                 currentChapterIndex++;
                 loadChapter(currentChapterIndex);
+                saveReadingProgress(currentChapterIndex, 0);  // Lưu tiến trình đọc, vị trí bắt đầu = 0
             }
         });
 
         // Hiển thị menu tùy chọn khi ấn vào nút menu
         ivMenu.setOnClickListener(v -> showMenu());
     }
-
 
     private void loadChapter(int index) {
         chapter = chapterList.get(index);
@@ -141,6 +144,11 @@ public class ChapterDetailActivity extends AppCompatActivity {
             }
         });
         popupMenu.show();
+    }
+
+    private void saveReadingProgress(int chapterIndex, int lastPosition) {
+        userRef.child("last_chapter_read").setValue(chapterIndex);
+        userRef.child("last_position").setValue(lastPosition);
     }
 
     private void changeFontSize() {
