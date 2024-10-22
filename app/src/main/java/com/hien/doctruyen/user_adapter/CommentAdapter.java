@@ -47,10 +47,11 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
                 .error(R.drawable.ic_erro)
                 .into(holder.ivAvatar);
 
-        // Hiển thị thời gian bình luận (dùng TimeAgo để hiển thị "x giờ trước", "x ngày trước")
+        // Hiển thị thời gian bình luận
         String timeAgo = TimeAgo.using(comment.getTimestamp());
         holder.tvCommentTime.setText(timeAgo);
     }
+
 
     @Override
     public int getItemCount() {

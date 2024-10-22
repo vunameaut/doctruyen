@@ -37,6 +37,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
 import com.google.firebase.storage.UploadTask;
@@ -198,12 +200,14 @@ public class AccountFragment extends Fragment {
             return;
         }
 
+        String userId = mAuth.getCurrentUser().getUid();
         StorageReference fileRef = FirebaseStorage.getInstance().getReference()
-                .child("users/" + mAuth.getCurrentUser().getUid() + "/profile.jpg");
+                .child("users/" + userId + "/profile.jpg");
+
         fileRef.putFile(imageUri)
                 .addOnSuccessListener(taskSnapshot -> fileRef.getDownloadUrl()
                         .addOnSuccessListener(uri -> {
-                            // Cập nhật URL ảnh trong hồ sơ người dùng Firebase
+                            // Cập nhật URL ảnh trong hồ sơ người dùng Firebase Auth
                             FirebaseUser user = mAuth.getCurrentUser();
                             if (user != null) {
                                 UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
@@ -212,14 +216,19 @@ public class AccountFragment extends Fragment {
 
                                 user.updateProfile(profileUpdates).addOnCompleteListener(task -> {
                                     if (task.isSuccessful()) {
-                                        Toast.makeText(getContext(), "Ảnh đại diện đã được cập nhật!", Toast.LENGTH_SHORT).show();
-                                        Picasso.get().load(uri).transform(new CircleTransform()).into(ivProfile);  // Hiển thị ảnh đại diện mới với hình tròn
+                                        // Hiển thị ảnh đại diện mới với hình tròn
+                                        Picasso.get().load(uri).transform(new CircleTransform()).into(ivProfile);
                                     }
                                 });
                             }
+
+                            // Cập nhật URL ảnh trong Realtime Database
+                            DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
+                            userRef.child("avatar").setValue(uri.toString());
                         }))
                 .addOnFailureListener(e -> Toast.makeText(getContext(), "Tải ảnh thất bại: " + e.getMessage(), Toast.LENGTH_SHORT).show());
     }
+
 
     /**
      * Kiểm tra quyền và tải ảnh về nếu được cấp quyền.

@@ -11,6 +11,8 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -41,20 +43,16 @@ public class StoryDetailActivity extends AppCompatActivity {
     private Button btnComment;
     private EditText etComment;
 
+    // Khai báo biến story ở cấp độ lớp
+    private Story story;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story_detail2);
 
-        // Ánh xạ ImageView back
+        // Ánh xạ các thành phần giao diện
         ivBack = findViewById(R.id.iv_back);
-
-        // Xử lý khi nhấn vào nút back
-        ivBack.setOnClickListener(v -> {
-            onBackPressed();  // Quay lại Activity trước đó
-        });
-
-        // Tiếp tục ánh xạ và xử lý các thành phần khác...
         ivCover = findViewById(R.id.iv_story_cover);
         tvTitle = findViewById(R.id.tv_story_title);
         tvAuthor = findViewById(R.id.tv_story_author);
@@ -65,10 +63,9 @@ public class StoryDetailActivity extends AppCompatActivity {
         btnComment = findViewById(R.id.btn_post_comment);
         etComment = findViewById(R.id.et_comment);
 
-
-        // Lấy thông tin từ Intent
+        // Lấy thông tin story từ Intent và gán vào biến instance story
         Intent intent = getIntent();
-        Story story = (Story) intent.getSerializableExtra("story");
+        story = (Story) intent.getSerializableExtra("story");
 
         if (story != null) {
             // Hiển thị thông tin truyện
@@ -76,28 +73,23 @@ public class StoryDetailActivity extends AppCompatActivity {
             tvAuthor.setText(story.getAuthor());
             tvGenres.setText(String.join(", ", story.getGenres()));
             tvDescription.setText(story.getDescription());
-
-            // Hiển thị ảnh bìa
             Picasso.get().load(story.getImageUrl()).into(ivCover);
 
-            // Khởi tạo danh sách bình luận
+            // Khởi tạo danh sách chapter và comment
             commentList = new ArrayList<>();
+            chapterList = new ArrayList<>();
             commentAdapter = new CommentAdapter(commentList, this);
+            chapterAdapter = new ChapterAdapter(chapterList, this);
             rvComments.setLayoutManager(new LinearLayoutManager(this));
             rvComments.setAdapter(commentAdapter);
-
-            // Khởi tạo danh sách chapter
-            chapterList = new ArrayList<>();
-            chapterAdapter = new ChapterAdapter(chapterList, this);
             rvChapters.setLayoutManager(new LinearLayoutManager(this));
             rvChapters.setAdapter(chapterAdapter);
 
-            // Lấy dữ liệu chapter từ Firebase
+            // Lấy dữ liệu từ Firebase
             chaptersRef = FirebaseDatabase.getInstance().getReference("stories").child(story.getId()).child("chapters");
-            loadChapters();
-
-            // Lấy bình luận từ Firebase
             commentRef = FirebaseDatabase.getInstance().getReference("comments").child(story.getId());
+
+            loadChapters();
             loadComments();
 
             // Xử lý khi nhấn nút đăng bình luận
@@ -108,6 +100,18 @@ public class StoryDetailActivity extends AppCompatActivity {
                     etComment.setText("");
                 }
             });
+        }
+    }
+
+    private void postComment(String content) {
+        // Lấy userId từ phiên người dùng hiện tại (đăng nhập)
+        String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        // Tạo đối tượng Comment với userId và storyId từ biến story
+        String commentId = commentRef.push().getKey();
+        Comment comment = new Comment(commentId, story.getId(), userId, content, System.currentTimeMillis());  // Sử dụng story.getId()
+        if (commentId != null) {
+            commentRef.child(commentId).setValue(comment);
         }
     }
 
@@ -140,7 +144,7 @@ public class StoryDetailActivity extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Comment comment = snapshot.getValue(Comment.class);
                     if (comment != null) {
-                        loadCommentUserData(comment);
+                        loadCommentUserData(comment);  // Truy vấn thông tin người dùng dựa trên userId
                         commentList.add(comment);
                     }
                 }
@@ -155,7 +159,7 @@ public class StoryDetailActivity extends AppCompatActivity {
     }
 
     private void loadCommentUserData(Comment comment) {
-        String userId = comment.getUserId();  // Giả sử bạn có userId trong Comment
+        String userId = comment.getUserId();  // Truy vấn userId từ comment
 
         if (userId != null && !userId.isEmpty()) {
             DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
@@ -164,9 +168,9 @@ public class StoryDetailActivity extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     User user = dataSnapshot.getValue(User.class);
                     if (user != null) {
-                        comment.setUsername(user.getUsername());
-                        comment.setAvatarUrl(user.getAvatar());
-                        commentAdapter.notifyDataSetChanged();
+                        comment.setUsername(user.getUsername());  // Cập nhật username
+                        comment.setAvatarUrl(user.getAvatar());   // Cập nhật avatarUrl
+                        commentAdapter.notifyDataSetChanged();    // Cập nhật giao diện
                     }
                 }
 
@@ -177,15 +181,6 @@ public class StoryDetailActivity extends AppCompatActivity {
             });
         } else {
             Log.e("StoryDetailActivity", "User ID is null or empty");
-        }
-    }
-
-
-    private void postComment(String content) {
-        String commentId = commentRef.push().getKey();
-        Comment comment = new Comment("username_placeholder", content, "avatar_url_placeholder");  // Thay thế bằng dữ liệu thực
-        if (commentId != null) {
-            commentRef.child(commentId).setValue(comment);
         }
     }
 }

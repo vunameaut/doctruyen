@@ -6,8 +6,8 @@ public class Comment implements Serializable {
     private String id;
     private String storyId;  // ID của truyện mà bình luận thuộc về
     private String userId;   // ID của người dùng bình luận
-    private String username; // Tên người dùng
-    private String avatarUrl; // URL ảnh đại diện của người dùng
+    private String username; // Tên người dùng (truy vấn từ Firebase)
+    private String avatarUrl; // URL ảnh đại diện của người dùng (truy vấn từ Firebase)
     private String content;  // Nội dung bình luận
     private long timestamp;  // Thời gian bình luận
 
@@ -16,22 +16,12 @@ public class Comment implements Serializable {
     }
 
     // Constructor đầy đủ
-    public Comment(String id, String storyId, String userId, String username, String avatarUrl, String content, long timestamp) {
+    public Comment(String id, String storyId, String userId, String content, long timestamp) {
         this.id = id;
         this.storyId = storyId;
         this.userId = userId;
-        this.username = username;
-        this.avatarUrl = avatarUrl;
         this.content = content;
         this.timestamp = timestamp;
-    }
-
-    // Constructor đơn giản với 3 tham số (username, content, avatarUrl)
-    public Comment(String username, String content, String avatarUrl) {
-        this.username = username;
-        this.content = content;
-        this.avatarUrl = avatarUrl;
-        this.timestamp = System.currentTimeMillis(); // Gán thời gian hiện tại
     }
 
     // Getter và Setter cho các thuộc tính
