@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Button;
@@ -39,12 +40,14 @@ public class StoryDetailActivity extends AppCompatActivity {
     private ChapterAdapter chapterAdapter;
     private List<Comment> commentList;
     private List<Chapter> chapterList;
-    private DatabaseReference commentRef, chaptersRef;
+    private DatabaseReference commentRef, chaptersRef, userFavoritesRef;
     private Button btnComment;
     private EditText etComment;
+    private ImageButton btnFavorite;
 
     // Khai báo biến story ở cấp độ lớp
     private Story story;
+    private boolean isFavorite = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,6 +65,7 @@ public class StoryDetailActivity extends AppCompatActivity {
         rvComments = findViewById(R.id.recycler_view_comments);
         btnComment = findViewById(R.id.btn_post_comment);
         etComment = findViewById(R.id.et_comment);
+        btnFavorite = findViewById(R.id.btn_favorite);
 
         // Lấy thông tin story từ Intent và gán vào biến instance story
         Intent intent = getIntent();
@@ -74,6 +78,21 @@ public class StoryDetailActivity extends AppCompatActivity {
             tvGenres.setText(String.join(", ", story.getGenres()));
             tvDescription.setText(story.getDescription());
             Picasso.get().load(story.getImageUrl()).into(ivCover);
+
+            // Lấy reference đến mục yêu thích của người dùng
+            String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
+            userFavoritesRef = FirebaseDatabase.getInstance().getReference("users").child(userId).child("favorites");
+
+            checkIfFavorite();
+
+            // Xử lý khi người dùng nhấn nút yêu thích
+            btnFavorite.setOnClickListener(v -> {
+                if (isFavorite) {
+                    removeFavorite();
+                } else {
+                    addFavorite();
+                }
+            });
 
             // Khởi tạo danh sách chapter và comment
             commentList = new ArrayList<>();
@@ -104,6 +123,43 @@ public class StoryDetailActivity extends AppCompatActivity {
             // Xử lý nút back
             ivBack.setOnClickListener(v -> onBackPressed());
         }
+    }
+
+    private void addFavorite() {
+        userFavoritesRef.child(story.getId()).setValue(true).addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                isFavorite = true;
+                btnFavorite.setImageResource(R.drawable.ic_favorite_checked);  // Icon đậm
+            }
+        });
+    }
+
+    private void removeFavorite() {
+        userFavoritesRef.child(story.getId()).removeValue().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                isFavorite = false;
+                btnFavorite.setImageResource(R.drawable.ic_favorite_unchecked);  // Icon viền
+            }
+        });
+    }
+
+    private void checkIfFavorite() {
+        userFavoritesRef.child(story.getId()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                isFavorite = snapshot.exists();
+                if (isFavorite) {
+                    btnFavorite.setImageResource(R.drawable.ic_favorite_checked);  // Icon đậm
+                } else {
+                    btnFavorite.setImageResource(R.drawable.ic_favorite_unchecked);  // Icon viền
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e("StoryDetailActivity", "Error checking favorite status: " + error.getMessage());
+            }
+        });
     }
 
     private void postComment(String content) {
@@ -147,8 +203,6 @@ public class StoryDetailActivity extends AppCompatActivity {
             }
         });
     }
-
-
 
     private void loadComments() {
         commentRef.addValueEventListener(new ValueEventListener() {

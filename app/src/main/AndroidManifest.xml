@@ -2,14 +2,30 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <!-- Quyền camera, không bắt buộc -->
     <uses-feature
         android:name="android.hardware.camera"
-        android:required="false" /> <!-- Quyền Internet -->
+        android:required="false" />
+
+    <!-- Quyền Internet, cần thiết cho Firebase -->
     <uses-permission android:name="android.permission.INTERNET" />
+
+    <!-- Quyền đọc ảnh trên Android 13+ -->
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
-    <uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE"
+
+    <!-- Quyền đọc bộ nhớ ngoài trên Android 12 trở xuống -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"
         android:maxSdkVersion="32" />
+
+    <!-- Quyền đọc và ghi trạng thái mạng -->
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Quyền truy cập cài đặt hệ thống (độ sáng) -->
+    <uses-permission android:name="android.permission.WRITE_SETTINGS"
+        tools:ignore="ProtectedPermissions" />
+
+    <!-- Quyền truy cập mạng Wi-Fi -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
 
     <application
         android:allowBackup="true"
@@ -20,6 +36,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Doctruyen">
+
+        <!-- Các Activity khác của ứng dụng -->
         <activity
             android:name=".user.ChapterDetailActivity"
             android:exported="false" />
@@ -103,7 +121,6 @@
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

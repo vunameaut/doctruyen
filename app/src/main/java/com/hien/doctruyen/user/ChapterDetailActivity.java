@@ -1,5 +1,7 @@
 package com.hien.doctruyen.user;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -10,6 +12,15 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import android.widget.Toast;
+import android.widget.SeekBar;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.graphics.Color;
+import android.widget.LinearLayout;
+import android.widget.EditText;
+import android.provider.Settings;
+import android.view.WindowManager;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -127,9 +138,6 @@ public class ChapterDetailActivity extends AppCompatActivity {
             if (itemId == R.id.menu_font_size) {
                 changeFontSize();
                 return true;
-            } else if (itemId == R.id.menu_eye_protection) {
-                enableEyeProtectionMode();
-                return true;
             } else if (itemId == R.id.menu_brightness) {
                 adjustBrightness();
                 return true;
@@ -152,22 +160,123 @@ public class ChapterDetailActivity extends AppCompatActivity {
     }
 
     private void changeFontSize() {
-        // Thực hiện thay đổi kích cỡ chữ
+        // Hiển thị một dialog để điều chỉnh kích cỡ chữ
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Thay đổi kích cỡ chữ");
+
+        final SeekBar seekBar = new SeekBar(this);
+        seekBar.setMax(50); // Giới hạn tối đa cho kích cỡ chữ
+        seekBar.setProgress(16); // Kích cỡ mặc định
+
+        builder.setView(seekBar);
+
+        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                int fontSize = seekBar.getProgress();
+                tvChapterContent.setTextSize(fontSize);
+            }
+        });
+
+        builder.setNegativeButton("Hủy", null);
+
+        AlertDialog dialog = builder.create();
+        dialog.show();
     }
 
-    private void enableEyeProtectionMode() {
-        // Thực hiện bật chế độ bảo vệ mắt
-    }
+
 
     private void adjustBrightness() {
         // Thực hiện điều chỉnh độ sáng màn hình
+        try {
+            if (Settings.System.canWrite(this)) {
+                // Người dùng đã cấp quyền chỉnh sửa cài đặt hệ thống
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.setTitle("Điều chỉnh độ sáng");
+
+                final SeekBar seekBar = new SeekBar(this);
+                seekBar.setMax(255);  // Độ sáng tối đa
+                seekBar.setProgress(Settings.System.getInt(getContentResolver(), Settings.System.SCREEN_BRIGHTNESS));  // Lấy độ sáng hiện tại
+
+                builder.setView(seekBar);
+
+                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        int brightness = seekBar.getProgress();
+                        WindowManager.LayoutParams layoutParams = getWindow().getAttributes();
+                        layoutParams.screenBrightness = brightness / 255.0f;
+                        getWindow().setAttributes(layoutParams);
+                    }
+                });
+
+                builder.setNegativeButton("Hủy", null);
+
+                AlertDialog dialog = builder.create();
+                dialog.show();
+            } else {
+                // Nếu chưa có quyền chỉnh sửa, dẫn người dùng đến trang cài đặt quyền
+                Toast.makeText(this, "Bạn chưa cấp quyền chỉnh sửa cài đặt hệ thống.", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(Settings.ACTION_MANAGE_WRITE_SETTINGS);
+                intent.setData(Uri.parse("package:" + getPackageName()));
+                startActivity(intent);
+            }
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
+
     private void changeBackgroundColor() {
-        // Thực hiện thay đổi màu nền
+        // Hiển thị một dialog cho phép người dùng chọn màu nền
+        final CharSequence[] items = {"Trắng", "Xám", "Đen"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Thay đổi màu nền");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        findViewById(R.id.activity_chapter_detail).setBackgroundColor(Color.WHITE);
+                        break;
+                    case 1:
+                        findViewById(R.id.activity_chapter_detail).setBackgroundColor(Color.GRAY);
+                        break;
+                    case 2:
+                        findViewById(R.id.activity_chapter_detail).setBackgroundColor(Color.BLACK);
+                        break;
+                }
+            }
+        });
+        builder.show();
     }
 
     private void changeTextColor() {
-        // Thực hiện thay đổi màu chữ
+        // Hiển thị một dialog cho phép người dùng chọn màu chữ
+        final CharSequence[] items = {"Đen","Trắng", "Xanh dương", "Đỏ"};
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("Thay đổi màu chữ");
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                switch (which) {
+                    case 0:
+                        tvChapterContent.setTextColor(Color.BLACK);
+                        break;
+                    case 1:
+                        tvChapterContent.setTextColor(Color.WHITE);
+                        break;
+                    case 2:
+                        tvChapterContent.setTextColor(Color.RED);
+                        break;
+                    case 3:
+                        tvChapterContent.setTextColor(Color.BLUE);
+                        break;
+                }
+            }
+        });
+        builder.show();
     }
 }

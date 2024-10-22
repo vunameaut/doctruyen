@@ -73,6 +73,15 @@
                     android:text="Mô tả: ..."
                     android:textColor="@android:color/black"
                     android:layout_marginTop="4dp" />
+
+                <!-- Nút Lưu vào yêu thích -->
+                <ImageButton
+                    android:id="@+id/btn_favorite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_favorite_unchecked"
+                    android:contentDescription="Favorite"
+                    android:layout_marginTop="8dp" />
             </LinearLayout>
         </LinearLayout>
 

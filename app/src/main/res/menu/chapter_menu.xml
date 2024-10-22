@@ -3,9 +3,6 @@
         android:id="@+id/menu_font_size"
         android:title="Chỉnh kích cỡ chữ" />
     <item
-        android:id="@+id/menu_eye_protection"
-        android:title="Bật chế độ bảo vệ mắt" />
-    <item
         android:id="@+id/menu_brightness"
         android:title="Chỉnh độ sáng" />
     <item
