@@ -2,6 +2,7 @@ package com.hien.doctruyen.detail;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog; // Thêm import cho ProgressDialog
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.net.Uri;
@@ -19,7 +20,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.google.firebase.storage.UploadTask;
 import com.hien.doctruyen.R;
 import com.squareup.picasso.Picasso;
 
@@ -43,10 +43,18 @@ public class AdminStoryDetailActivity extends AppCompatActivity {
     // Biến lưu trữ dữ liệu ban đầu
     private String initialTitle, initialAuthor, initialGenre, initialDescription;
 
+    // Thêm ProgressDialog
+    private ProgressDialog progressDialog;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_story_detail);
+
+        // Khởi tạo ProgressDialog
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setMessage("Đang lưu...");
+        progressDialog.setCancelable(false); // Không cho phép hủy khi đang load
 
         // Ánh xạ các view từ layout
         titleEditText = findViewById(R.id.edit_text_title);
@@ -156,6 +164,9 @@ public class AdminStoryDetailActivity extends AppCompatActivity {
 
     // Lưu thông tin truyện vào Firebase
     private void saveStoryDetails() {
+        // Hiển thị vòng tròn xoay
+        progressDialog.show();
+
         String updatedTitle = titleEditText.getText().toString();
         String updatedAuthor = authorEditText.getText().toString();
         String updatedGenre = genreEditText.getText().toString();
@@ -173,15 +184,30 @@ public class AdminStoryDetailActivity extends AppCompatActivity {
             fileRef.putFile(avatarUri).addOnSuccessListener(taskSnapshot -> {
                 fileRef.getDownloadUrl().addOnSuccessListener(uri -> {
                     storyUpdates.put("imageUrl", uri.toString());
-                    storyRef.child(storyId).updateChildren(storyUpdates);
-                    Toast.makeText(this, "Lưu thành công!", Toast.LENGTH_SHORT).show();
+                    storyRef.child(storyId).updateChildren(storyUpdates)
+                            .addOnCompleteListener(task -> onSaveComplete(task.isSuccessful()));
+                }).addOnFailureListener(e -> {
+                    progressDialog.dismiss();
+                    Toast.makeText(this, "Lỗi khi lấy URL ảnh!", Toast.LENGTH_SHORT).show();
                 });
             }).addOnFailureListener(e -> {
+                progressDialog.dismiss();
                 Toast.makeText(this, "Lỗi khi tải ảnh lên!", Toast.LENGTH_SHORT).show();
             });
         } else {
-            storyRef.child(storyId).updateChildren(storyUpdates);
+            storyRef.child(storyId).updateChildren(storyUpdates)
+                    .addOnCompleteListener(task -> onSaveComplete(task.isSuccessful()));
+        }
+    }
+
+    // Hàm xử lý sau khi lưu thành công hoặc thất bại
+    private void onSaveComplete(boolean success) {
+        progressDialog.dismiss();
+        if (success) {
             Toast.makeText(this, "Lưu thành công!", Toast.LENGTH_SHORT).show();
+            finish(); // Đóng Activity sau khi lưu thành công
+        } else {
+            Toast.makeText(this, "Lỗi khi lưu!", Toast.LENGTH_SHORT).show();
         }
     }
 }

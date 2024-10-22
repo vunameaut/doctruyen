@@ -122,13 +122,6 @@
                     android:text="Tự Do" />
             </LinearLayout>
 
-            <!-- ProgressBar cho quá trình tải lên -->
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:visibility="gone" />
 
             <!-- Nút lưu chuyển xuống cuối cùng -->
             <androidx.appcompat.widget.AppCompatButton

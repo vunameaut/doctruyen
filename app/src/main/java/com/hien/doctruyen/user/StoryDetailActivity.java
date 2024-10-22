@@ -100,6 +100,9 @@ public class StoryDetailActivity extends AppCompatActivity {
                     etComment.setText("");
                 }
             });
+
+            // Xử lý nút back
+            ivBack.setOnClickListener(v -> onBackPressed());
         }
     }
 
@@ -109,7 +112,7 @@ public class StoryDetailActivity extends AppCompatActivity {
 
         // Tạo đối tượng Comment với userId và storyId từ biến story
         String commentId = commentRef.push().getKey();
-        Comment comment = new Comment(commentId, story.getId(), userId, content, System.currentTimeMillis());  // Sử dụng story.getId()
+        Comment comment = new Comment(commentId, story.getId(), userId, content, System.currentTimeMillis());
         if (commentId != null) {
             commentRef.child(commentId).setValue(comment);
         }
@@ -127,6 +130,15 @@ public class StoryDetailActivity extends AppCompatActivity {
                     }
                 }
                 chapterAdapter.notifyDataSetChanged();
+
+                // Xử lý khi người dùng nhấn vào chapter
+                chapterAdapter.setOnItemClickListener((chapter, position) -> {
+                    Intent intent = new Intent(StoryDetailActivity.this, ChapterDetailActivity.class);
+                    intent.putExtra("chapter", chapter);  // Truyền Chapter qua Intent
+                    intent.putExtra("story", story);      // Truyền Story qua Intent
+                    intent.putExtra("chapterIndex", position);  // Truyền chỉ số của chương qua Intent
+                    startActivity(intent);
+                });
             }
 
             @Override
@@ -135,6 +147,8 @@ public class StoryDetailActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     private void loadComments() {
         commentRef.addValueEventListener(new ValueEventListener() {
@@ -159,7 +173,7 @@ public class StoryDetailActivity extends AppCompatActivity {
     }
 
     private void loadCommentUserData(Comment comment) {
-        String userId = comment.getUserId();  // Truy vấn userId từ comment
+        String userId = comment.getUserId();
 
         if (userId != null && !userId.isEmpty()) {
             DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(userId);
@@ -168,9 +182,9 @@ public class StoryDetailActivity extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                     User user = dataSnapshot.getValue(User.class);
                     if (user != null) {
-                        comment.setUsername(user.getUsername());  // Cập nhật username
-                        comment.setAvatarUrl(user.getAvatar());   // Cập nhật avatarUrl
-                        commentAdapter.notifyDataSetChanged();    // Cập nhật giao diện
+                        comment.setUsername(user.getUsername());
+                        comment.setAvatarUrl(user.getAvatar());
+                        commentAdapter.notifyDataSetChanged();  // Cập nhật giao diện
                     }
                 }
 
