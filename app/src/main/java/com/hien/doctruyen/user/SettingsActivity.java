@@ -1,17 +1,17 @@
 package com.hien.doctruyen.user;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.os.Bundle;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.hien.doctruyen.R;
@@ -41,32 +41,12 @@ public class SettingsActivity extends AppCompatActivity {
         // Đăng ký sự kiện nhấn
         LoadActivity();
 
-
-        btnDangXuat.setOnClickListener(v -> {
-            // Xóa thông tin uid đã lưu trong SharedPreferences
-            SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
-            SharedPreferences.Editor editor = sharedPreferences.edit();
-            editor.remove("uid"); // Xóa uid
-            editor.apply(); // Áp dụng thay đổi
-
-            // Đăng xuất FirebaseAuth nếu sử dụng
-            FirebaseAuth.getInstance().signOut(); // Đăng xuất FirebaseAuth
-
-            // Tạo intent chuyển về màn hình Login và xóa tất cả các Activity khác
-            Intent intent = new Intent(this, login.class);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK); // Xóa hết các Activity trước đó
-            startActivity(intent);
-            finish(); // Đóng màn hình hiện tại
-        });
-
-
-
-
+        btnDangXuat.setOnClickListener(v -> logout()); // Sử dụng hàm logout
     }
 
     // Ánh xạ các thành phần giao diện
     private void Mapping() {
-        btnBack =  findViewById(R.id.ivBack);
+        btnBack = findViewById(R.id.ivBack);
         btnThongBao = findViewById(R.id.btnThongBao);
         btnTaiKhoanBaoMat = findViewById(R.id.btnTkBm);
         btnHoTro = findViewById(R.id.btnHoTro);
@@ -77,33 +57,34 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private void LoadActivity() {
-        btnBack.setOnClickListener(view -> {
-            finish();
-        });
-        btnThongBao.setOnClickListener(view -> {
-            Intent intent = new Intent(this, ThongBao.class);
-            startActivity(intent);
-        });
-        btnTaiKhoanBaoMat.setOnClickListener(view -> {
-            Intent intent = new Intent(this, TKvaBM.class);
-            startActivity(intent);
-        });
-
-        btnHoTro.setOnClickListener(view -> {
-            Intent intent = new Intent(this, HoTro.class);
-            startActivity(intent);
-        });
-        btnCongDong.setOnClickListener(view -> {
-            Intent intent = new Intent(this, CongDong.class);
-            startActivity(intent);
-        });
-        btnDieuKhoan.setOnClickListener(view -> {
-            Intent intent = new Intent(this, DieuKhoan.class);
-            startActivity(intent);
-        });
-        btnGioiThieu.setOnClickListener(view -> {
-            Intent intent = new Intent(this, GioiThieu.class);
-            startActivity(intent);
-        });
+        btnBack.setOnClickListener(view -> finish());
+        btnThongBao.setOnClickListener(view -> startActivity(new Intent(this, ThongBao.class)));
+        btnTaiKhoanBaoMat.setOnClickListener(view -> startActivity(new Intent(this, TKvaBM.class)));
+        btnHoTro.setOnClickListener(view -> startActivity(new Intent(this, HoTro.class)));
+        btnCongDong.setOnClickListener(view -> startActivity(new Intent(this, CongDong.class)));
+        btnDieuKhoan.setOnClickListener(view -> startActivity(new Intent(this, DieuKhoan.class)));
+        btnGioiThieu.setOnClickListener(view -> startActivity(new Intent(this, GioiThieu.class)));
     }
+
+    // Hàm đăng xuất người dùng và xóa thông tin đăng nhập
+    private void logout() {
+        SharedPreferences preferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.clear();  // Clear all stored data
+        editor.apply();
+
+        FirebaseAuth.getInstance().signOut();
+
+        Intent intent = new Intent(this, login.class);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(intent);
+        finish(); // Kết thúc Activity hiện tại
+    }
+
+    // Hàm chỉnh sửa hồ sơ người dùng
+    private void editUserProfile() {
+        Toast.makeText(this, "Chức năng chỉnh sửa hồ sơ đang được phát triển.", Toast.LENGTH_SHORT).show();
+    }
+
+
 }

@@ -37,6 +37,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.auth.UserProfileChangeRequest;
+import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
@@ -56,7 +57,6 @@ public class AccountFragment extends Fragment {
 
     private TextView tvUsername, tvEmail, tvPhone;
     private ImageView ivProfile, ivSettings; // Thêm ivSettings
-    private Button btnLogout, btnEditProfile;
     private FirebaseAuth mAuth;
 
     private ActivityResultLauncher<Intent> imagePickerLauncher;
@@ -84,8 +84,6 @@ public class AccountFragment extends Fragment {
         tvPhone = view.findViewById(R.id.tv_phone);
         ivProfile = view.findViewById(R.id.iv_profile);
         ivSettings = view.findViewById(R.id.iv_settings);
-        btnLogout = view.findViewById(R.id.btn_logout);
-        btnEditProfile = view.findViewById(R.id.btn_edit_profile);
 
         // Khởi tạo Image Picker Launcher
         imagePickerLauncher = registerForActivityResult(
@@ -121,16 +119,6 @@ public class AccountFragment extends Fragment {
 
 
 
-        // Thiết lập sự kiện cho nút đăng xuất
-        btnLogout.setOnClickListener(v -> logout());
-
-        // Thiết lập sự kiện cho nút sửa thông tin cá nhân
-        btnEditProfile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                editUserProfile();
-            }
-        });
 
         // Hiển thị thông tin người dùng
         displayUserInfo();
@@ -304,31 +292,44 @@ public class AccountFragment extends Fragment {
      * Hiển thị thông tin người dùng trong giao diện.
      */
     private void displayUserInfo() {
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            String displayName = user.getDisplayName();
-            String email = user.getEmail();
-            String phone = user.getPhoneNumber(); // Lấy số điện thoại nếu có
-
-            tvUsername.setText("Name: " + (displayName != null ? displayName : "Không có tên"));
-            tvEmail.setText("Email: " + (email != null ? email : "Không có email"));
-            tvPhone.setText("SĐT: " + (phone != null ? phone : "Không có số điện thoại"));
-
-            if (user.getPhotoUrl() != null) {
-                Picasso.get()
-                        .load(user.getPhotoUrl())
-                        .transform(new CircleTransform()) // Áp dụng transformation để hình tròn
-                        .into(ivProfile);
-            } else {
-                ivProfile.setImageResource(R.drawable.default_profile); // Đặt ảnh mặc định nếu không có
-            }
-        } else {
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        if (currentUser == null) {
             tvUsername.setText("Người dùng chưa đăng nhập");
             tvEmail.setText("");
             tvPhone.setText("");
-            ivProfile.setImageResource(R.drawable.default_profile); // Đặt ảnh mặc định nếu không có
+            ivProfile.setImageResource(R.drawable.default_profile);  // Default profile image
+            return;
         }
+
+        // Reference to the current user in the database
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(currentUser.getUid());
+        userRef.get().addOnCompleteListener(task -> {
+            if (task.isSuccessful() && task.getResult() != null) {
+                DataSnapshot snapshot = task.getResult();
+
+                // Retrieve and set username, email, phone, and avatar
+                String username = snapshot.child("username").getValue(String.class);
+                String email = snapshot.child("email").getValue(String.class);
+                String phone = snapshot.child("sdt").getValue(String.class);
+                String avatarUrl = snapshot.child("avatar").getValue(String.class);
+
+                // Display information or default if null
+                tvUsername.setText("Name: " + (username != null ? username : "Không có tên"));
+                tvEmail.setText("Email: " + (email != null ? email : "Không có email"));
+                tvPhone.setText("SĐT: " + (phone != null ? phone : "Không có số điện thoại"));
+
+                // Load avatar image
+                if (avatarUrl != null) {
+                    Picasso.get().load(avatarUrl).transform(new CircleTransform()).into(ivProfile);
+                } else {
+                    ivProfile.setImageResource(R.drawable.default_profile);
+                }
+            } else {
+                Toast.makeText(getContext(), "Lỗi khi tải thông tin người dùng", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
 
     /**
      * Xem ảnh đại diện trong một Activity khác.
@@ -345,42 +346,7 @@ public class AccountFragment extends Fragment {
         }
     }
 
-    /**
-     * Đăng xuất người dùng và chuyển hướng về màn hình đăng nhập.
-     */
-    private void logoutUser() {
-        mAuth.signOut();
-        Toast.makeText(getContext(), "Đã đăng xuất thành công!", Toast.LENGTH_SHORT).show();
-        // Chuyển hướng người dùng về màn hình đăng nhập hoặc trang chủ
-        Intent intent = new Intent(getActivity(), login.class);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        requireActivity().finish();
-    }
 
-    /**
-     * Chỉnh sửa hồ sơ người dùng.
-     */
-    private void editUserProfile() {
-        // Triển khai chức năng chỉnh sửa hồ sơ người dùng
-        // Ví dụ: Mở một Activity hoặc Dialog để người dùng nhập thông tin mới
-        // Intent intent = new Intent(getActivity(), EditProfileActivity.class);
-        // startActivity(intent);
-        Toast.makeText(getContext(), "Chức năng chỉnh sửa hồ sơ đang được phát triển.", Toast.LENGTH_SHORT).show();
-    }
-
-    /**
-     * Kiểm tra xem có nên hiển thị lời nhắc xin quyền cho quyền hiện tại hay không.
-     * @return true nếu nên hiển thị lời nhắc, false nếu không
-     */
-    private boolean shouldShowRequestPermissionRationaleForCurrentPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            return shouldShowRequestPermissionRationale(Manifest.permission.READ_MEDIA_IMAGES);
-        } else {
-            return shouldShowRequestPermissionRationale(Manifest.permission.READ_EXTERNAL_STORAGE) ||
-                    shouldShowRequestPermissionRationale(Manifest.permission.WRITE_EXTERNAL_STORAGE);
-        }
-    }
 
 
     /**
@@ -391,17 +357,5 @@ public class AccountFragment extends Fragment {
         startActivity(intent);
     }
 
-    private void logout() {
-        SharedPreferences preferences = getActivity().getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = preferences.edit();
-        editor.clear();  // Clear all stored data
-        editor.apply();
 
-        FirebaseAuth.getInstance().signOut();
-
-        Intent intent = new Intent(getActivity(), login.class);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        startActivity(intent);
-        getActivity().finish();  // Kết thúc Activity chứa Fragment
-    }
 }

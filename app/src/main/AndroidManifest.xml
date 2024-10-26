@@ -38,6 +38,15 @@
         android:theme="@style/Theme.Doctruyen">
 
         <!-- Các Activity khác của ứng dụng -->
+        <activity android:name=".user.Settings.myProfile" />
+        <activity android:name=".user.Settings.ChangePass" />
+        <activity android:name=".user.Settings.CongDong" />
+        <activity android:name=".user.Settings.DieuKhoan" />
+        <activity android:name=".user.Settings.GioiThieu" />
+        <activity android:name=".user.Settings.HoTro" />
+        <activity android:name=".user.Settings.ThongBao" />
+        <activity android:name=".user.Settings.TKvaBM" />
+
         <activity
             android:name=".user.ChapterDetailActivity"
             android:exported="false" />
@@ -68,24 +77,7 @@
             android:name=".user.SettingsActivity"
             android:exported="false"
             android:screenOrientation="portrait" />
-        <activity
-            android:name=".user.Settings.HoTro"
-            android:exported="false" />
-        <activity
-            android:name=".user.Settings.TKvaBM"
-            android:exported="false" />
-        <activity
-            android:name=".user.Settings.ThongBao"
-            android:exported="false" />
-        <activity
-            android:name=".user.Settings.GioiThieu"
-            android:exported="false" />
-        <activity
-            android:name=".user.Settings.CongDong"
-            android:exported="false" />
-        <activity
-            android:name=".user.Settings.DieuKhoan"
-            android:exported="false" />
+
         <activity
             android:name=".user.ImageViewActivity"
             android:screenOrientation="portrait"

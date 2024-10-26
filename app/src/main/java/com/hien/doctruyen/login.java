@@ -56,9 +56,8 @@ public class login extends AppCompatActivity {
         // Khởi tạo SharedPreferences để lưu thông tin đăng nhập
         sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
 
-
         forgotPassword.setOnClickListener(v -> {
-            // Redirect to ForgotPasswordActivity
+            // Chuyển hướng tới ForgotPasswordActivity
             Intent intent = new Intent(login.this, ForgotPasswordActivity.class);
             startActivity(intent);
         });
@@ -105,10 +104,8 @@ public class login extends AppCompatActivity {
             if (user == null) {
                 // Người dùng đã bị đăng xuất
                 Toast.makeText(login.this, "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.", Toast.LENGTH_SHORT).show();
-                // Chuyển hướng về màn hình đăng nhập hoặc xử lý lại đăng nhập
             }
         };
-
     }
 
     private void autoLogin(String uid) {
@@ -165,8 +162,7 @@ public class login extends AppCompatActivity {
         // Sử dụng Firebase để đăng nhập với email và mật khẩu
         mAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
-                    // Tắt hộp thoại tải sau khi hoàn tất đăng nhập
-                    progressDialog.dismiss();
+                    progressDialog.dismiss(); // Tắt hộp thoại tải sau khi hoàn tất đăng nhập
                     if (task.isSuccessful()) {
                         // Đăng nhập thành công
                         FirebaseUser user = mAuth.getCurrentUser();
@@ -193,7 +189,7 @@ public class login extends AppCompatActivity {
                                             startActivity(intent);
                                             finish();
 
-                                            // Lưu thông tin đăng nhập
+                                            // Lưu thông tin đăng nhập vào SharedPreferences
                                             SharedPreferences.Editor editor = sharedPreferences.edit();
                                             editor.putString("uid", user.getUid());  // Lưu UID
                                             editor.putBoolean("remember", rememberMeCheckBox.isChecked());  // Lưu trạng thái "Nhớ tôi"
@@ -210,7 +206,6 @@ public class login extends AppCompatActivity {
                                     Toast.makeText(login.this, "Lỗi khi truy vấn dữ liệu người dùng: " + databaseTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             });
-
                         }
                     } else {
                         // Đăng nhập thất bại

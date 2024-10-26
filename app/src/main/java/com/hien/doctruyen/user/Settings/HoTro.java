@@ -16,6 +16,7 @@ import android.widget.Toast;
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.google.firebase.database.DataSnapshot;
 import com.hien.doctruyen.R;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -37,7 +38,7 @@ public class HoTro extends AppCompatActivity {
     Uri imageUri;
 
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference taikhoanRef = database.getReference("taikhoan");
+    DatabaseReference taikhoanRef = database.getReference("users");
     DatabaseReference reportRef = database.getReference("reports");
 
     StorageReference storageRef = FirebaseStorage.getInstance().getReference();
@@ -90,21 +91,33 @@ public class HoTro extends AppCompatActivity {
         SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         String uid = sharedPreferences.getString("uid", null);
 
-        taikhoanRef.child(uid).get().addOnCompleteListener(task -> {
-            if (task.isSuccessful()) {
-                currentMail = task.getResult().child("email").getValue(String.class);
-            }
-        });
-
-        String descrip =  InputDescription.getText().toString();
-
-        if (imageUri != null) {
-            UploadImage(imageUri, uid);
+        if (uid == null) {
+            Toast.makeText(this, "Không thể xác thực người dùng. Vui lòng đăng nhập lại.", Toast.LENGTH_SHORT).show();
+            return;
         }
 
-        reportRef.child(uid).child("description").setValue(descrip);
-        reportRef.child(uid).child("email").setValue(currentMail);
+        // Lấy email người dùng từ Firebase
+        taikhoanRef.child(uid).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                DataSnapshot snapshot = task.getResult();
+                // Truy xuất trường email từ dữ liệu
+                currentMail = snapshot.child("email").getValue(String.class);
+
+                // Thiết lập báo cáo vào Firebase
+                String descrip = InputDescription.getText().toString();
+                reportRef.child(uid).child("description").setValue(descrip);
+                reportRef.child(uid).child("email").setValue(currentMail);
+
+                // Kiểm tra và tải ảnh nếu có
+                if (imageUri != null) {
+                    UploadImage(imageUri, uid);
+                }
+            } else {
+                Toast.makeText(this, "Lỗi khi lấy thông tin người dùng", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
+
 
     // Mở thư viện ảnh trên điện thoại
     private void openGallery() {

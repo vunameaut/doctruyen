@@ -1,15 +1,17 @@
 package com.hien.doctruyen.user.Settings;
 
+import static android.content.ContentValues.TAG;
+
 import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -31,13 +33,12 @@ public class TKvaBM extends AppCompatActivity {
 
     // Khai báo database của Firebase
     FirebaseDatabase database = FirebaseDatabase.getInstance();
-    DatabaseReference dbRef = database.getReference("taikhoan");
+    DatabaseReference dbRef = database.getReference("users");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this); // Kích hoạt EdgeToEdge
-        setContentView(R.layout.setting_tkvabm); // Set layout cho activity
+        setContentView(R.layout.setting_tkvabm);
 
         Mapping(); // Liên kết các thành phần giao diện với mã
 
@@ -75,28 +76,29 @@ public class TKvaBM extends AppCompatActivity {
     }
 
     // Phương thức hiển thị thông tin người dùng từ Firebase
+    // Phương thức hiển thị thông tin người dùng từ Firebase
     private void showInfo() {
         // Lấy uid từ SharedPreferences
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
         String uid = sharedPreferences.getString("uid", null); // null nếu không tìm thấy
 
         if (uid != null) {
             // Kết nối Firebase và lấy thông tin người dùng theo uid
-            DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("taikhoan").child(uid);
+            DatabaseReference userRef = dbRef.child(uid);
 
-            dbRef.addValueEventListener(new ValueEventListener() {
+            userRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     // Lấy dữ liệu từ Firebase
                     String user = snapshot.child("username").getValue(String.class);
                     String email = snapshot.child("email").getValue(String.class);
-                    String sdt = snapshot.child("sdt").getValue(String.class);
+                    String phone = snapshot.child("phone").getValue(String.class);
 
                     // Kiểm tra và hiển thị thông tin
-                    if (user != null && email != null && sdt != null) {
+                    if (user != null && email != null && phone != null) {
                         viewUser.setHint(user);
                         viewEmail.setHint(email);
-                        viewPhone.setHint(sdt);
+                        viewPhone.setHint(phone);
                     } else {
                         Toast.makeText(TKvaBM.this, "Không tìm thấy thông tin người dùng", Toast.LENGTH_SHORT).show();
                     }
@@ -111,8 +113,13 @@ public class TKvaBM extends AppCompatActivity {
         } else {
             // Trường hợp không tìm thấy uid trong SharedPreferences
             Toast.makeText(TKvaBM.this, "Không tìm thấy UID người dùng, vui lòng đăng nhập lại", Toast.LENGTH_SHORT).show();
+            // Chuyển về màn hình đăng nhập
+            Intent intent = new Intent(TKvaBM.this, login.class);
+            startActivity(intent);
+            finish();
         }
     }
+
 
     // Hiển thị dialog xác nhận xóa tài khoản
     public void showConfirm() {
@@ -125,15 +132,10 @@ public class TKvaBM extends AppCompatActivity {
         // Nút "Xóa"
         builder.setPositiveButton("Xóa", (dialog, which) -> {
             DeleteAccount();
-            Toast.makeText(this, "Đã xóa", Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(this, login.class);
-            startActivity(intent);
         });
 
         // Nút "Không"
-        builder.setNegativeButton("Không", (dialog, which) -> {
-            dialog.dismiss();
-        });
+        builder.setNegativeButton("Không", (dialog, which) -> dialog.dismiss());
 
         // Hiển thị dialog
         AlertDialog dialog = builder.create();
@@ -143,7 +145,7 @@ public class TKvaBM extends AppCompatActivity {
     // Phương thức xóa tài khoản người dùng
     private void DeleteAccount() {
         // Lấy uid từ SharedPreferences
-        SharedPreferences sharedPreferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        SharedPreferences sharedPreferences = getSharedPreferences("LoginPrefs", MODE_PRIVATE);
         String uid = sharedPreferences.getString("uid", null);
 
         // Lấy instance của Firebase Authentication
@@ -169,6 +171,7 @@ public class TKvaBM extends AppCompatActivity {
                             // Chuyển về màn hình đăng nhập
                             Intent intent = new Intent(TKvaBM.this, login.class);
                             startActivity(intent);
+                            finish();
                         } else {
                             // Xử lý lỗi nếu không thể xóa tài khoản
                             Toast.makeText(TKvaBM.this, "Không thể xóa tài khoản: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();

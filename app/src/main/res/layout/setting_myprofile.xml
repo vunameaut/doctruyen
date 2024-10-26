@@ -131,30 +131,6 @@
                 tools:ignore="SpeakableTextPresentCheck" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_marginTop="20dp"
-            android:clickable="false">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="10dp"
-                android:textSize="16sp"
-                android:text="@string/address"
-                android:gravity="start|center" />
-
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/et_address"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="end|center"
-                android:inputType="text"
-                android:padding="10dp"
-                android:textSize="16sp"
-                tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
-        </LinearLayout>
 
         <LinearLayout
             android:id="@+id/ll_btn"
