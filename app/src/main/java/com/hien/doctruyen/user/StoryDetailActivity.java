@@ -40,12 +40,11 @@ public class StoryDetailActivity extends AppCompatActivity {
     private ChapterAdapter chapterAdapter;
     private List<Comment> commentList;
     private List<Chapter> chapterList;
-    private DatabaseReference commentRef, chaptersRef, userFavoritesRef;
+    private DatabaseReference commentRef, chaptersRef, userFavoritesRef, readingProgressRef;
     private Button btnComment;
     private EditText etComment;
     private ImageButton btnFavorite;
 
-    // Khai báo biến story ở cấp độ lớp
     private Story story;
     private boolean isFavorite = false;
 
@@ -82,6 +81,7 @@ public class StoryDetailActivity extends AppCompatActivity {
             // Lấy reference đến mục yêu thích của người dùng
             String userId = FirebaseAuth.getInstance().getCurrentUser().getUid();
             userFavoritesRef = FirebaseDatabase.getInstance().getReference("users").child(userId).child("favorites");
+            readingProgressRef = FirebaseDatabase.getInstance().getReference("users").child(userId).child("reading_progress").child(story.getId());
 
             checkIfFavorite();
 
@@ -108,7 +108,8 @@ public class StoryDetailActivity extends AppCompatActivity {
             chaptersRef = FirebaseDatabase.getInstance().getReference("stories").child(story.getId()).child("chapters");
             commentRef = FirebaseDatabase.getInstance().getReference("comments").child(story.getId());
 
-            loadChapters();
+            // Truy vấn chapter đang đọc
+            loadReadingProgress();
             loadComments();
 
             // Xử lý khi nhấn nút đăng bình luận
@@ -174,7 +175,41 @@ public class StoryDetailActivity extends AppCompatActivity {
         }
     }
 
-    private void loadChapters() {
+    private void loadReadingProgress() {
+        readingProgressRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                Long lastChapterRead = dataSnapshot.child("last_chapter_read").getValue(Long.class);
+                if (lastChapterRead != null) {
+                    openLastReadChapter(lastChapterRead.intValue());
+                } else {
+                    loadChapterList();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("StoryDetailActivity", "Error loading reading progress: " + databaseError.getMessage());
+                loadChapterList();
+            }
+        });
+    }
+
+    private void openLastReadChapter(int lastChapterIndex) {
+        if (lastChapterIndex >= 0 && lastChapterIndex < chapterList.size()) {
+            Chapter lastReadChapter = chapterList.get(lastChapterIndex);
+
+            Intent intent = new Intent(StoryDetailActivity.this, ChapterDetailActivity.class);
+            intent.putExtra("chapter", lastReadChapter);
+            intent.putExtra("story", story);
+            intent.putExtra("chapterIndex", lastChapterIndex);  // Truyền chỉ số của chương qua Intent
+            startActivity(intent);
+        } else {
+            loadChapterList();  // Nếu không tìm thấy chapter đang đọc, load danh sách chapter
+        }
+    }
+
+    private void loadChapterList() {
         chaptersRef.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
@@ -190,9 +225,9 @@ public class StoryDetailActivity extends AppCompatActivity {
                 // Xử lý khi người dùng nhấn vào chapter
                 chapterAdapter.setOnItemClickListener((chapter, position) -> {
                     Intent intent = new Intent(StoryDetailActivity.this, ChapterDetailActivity.class);
-                    intent.putExtra("chapter", chapter);  // Truyền Chapter qua Intent
-                    intent.putExtra("story", story);      // Truyền Story qua Intent
-                    intent.putExtra("chapterIndex", position);  // Truyền chỉ số của chương qua Intent
+                    intent.putExtra("chapter", chapter);
+                    intent.putExtra("story", story);
+                    intent.putExtra("chapterIndex", position);
                     startActivity(intent);
                 });
             }
@@ -212,7 +247,7 @@ public class StoryDetailActivity extends AppCompatActivity {
                 for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
                     Comment comment = snapshot.getValue(Comment.class);
                     if (comment != null) {
-                        loadCommentUserData(comment);  // Truy vấn thông tin người dùng dựa trên userId
+                        loadCommentUserData(comment);
                         commentList.add(comment);
                     }
                 }
@@ -238,7 +273,7 @@ public class StoryDetailActivity extends AppCompatActivity {
                     if (user != null) {
                         comment.setUsername(user.getUsername());
                         comment.setAvatarUrl(user.getAvatar());
-                        commentAdapter.notifyDataSetChanged();  // Cập nhật giao diện
+                        commentAdapter.notifyDataSetChanged();
                     }
                 }
 
