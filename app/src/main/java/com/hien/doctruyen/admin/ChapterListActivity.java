@@ -16,6 +16,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.hien.doctruyen.R;
 import com.hien.doctruyen.admin_adapter.ChapterAdapter;
+import com.hien.doctruyen.custom.SpaceItemDecoration;
 import com.hien.doctruyen.item.Chapter;
 
 import java.util.ArrayList;
@@ -43,6 +44,11 @@ public class ChapterListActivity extends AppCompatActivity {
 
         recyclerViewChapters = findViewById(R.id.recycler_view_chapters);
         recyclerViewChapters.setLayoutManager(new LinearLayoutManager(this));
+
+        // Thêm khoảng cách giữa các item
+        int spacing = getResources().getDimensionPixelSize(R.dimen.recycler_view_item_spacing);
+        recyclerViewChapters.addItemDecoration(new SpaceItemDecoration(spacing));
+
         chapterList = new ArrayList<>();
         chapterAdapter = new ChapterAdapter(chapterList, this);
         recyclerViewChapters.setAdapter(chapterAdapter);
@@ -52,7 +58,6 @@ public class ChapterListActivity extends AppCompatActivity {
 
         loadChaptersFromFirebase(storyUid);
 
-        // Xử lý sự kiện nhấn vào một chương
         chapterAdapter.setOnItemClickListener((position) -> {
             Chapter selectedChapter = chapterList.get(position);
             Intent intent = new Intent(ChapterListActivity.this, EditChapterActivity.class);
@@ -63,15 +68,14 @@ public class ChapterListActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Ánh xạ ImageView và xử lý sự kiện nhấn vào để thêm chương mới
         imgAddChapter = findViewById(R.id.img_add_chapter);
         imgAddChapter.setOnClickListener(v -> {
-            // Chuyển sang AddChapterActivity để thêm chương mới
             Intent intent = new Intent(ChapterListActivity.this, AddChapterActivity.class);
-            intent.putExtra("story_uid", storyUid);  // Truyền storyUid sang AddChapterActivity
+            intent.putExtra("story_uid", storyUid);
             startActivity(intent);
         });
     }
+
 
     private void loadChaptersFromFirebase(String storyUid) {
         DatabaseReference dbRef = FirebaseDatabase.getInstance().getReference("stories").child(storyUid).child("chapters");

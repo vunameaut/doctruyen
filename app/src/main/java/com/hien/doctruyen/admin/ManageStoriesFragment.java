@@ -70,10 +70,7 @@ public class ManageStoriesFragment extends Fragment {
                     try {
                         Story story = snapshot.getValue(Story.class);
                         if (story != null) {
-                            // Ghi log các thuộc tính để kiểm tra
-                            Log.d(TAG, "Title: " + story.getTitle());
-                            Log.d(TAG, "Author: " + story.getAuthor());
-                            Log.d(TAG, "Genres: " + story.getGenres());
+
                             storyList.add(story);
                         }
                     } catch (Exception e) {

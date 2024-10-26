@@ -1,6 +1,8 @@
 package com.hien.doctruyen.user;
 
 import android.os.Bundle;
+import android.view.View;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -33,7 +35,10 @@ public class FavoriteStoriesActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_favorite_stories);  // Cập nhật file layout nếu cần
+        setContentView(R.layout.activity_favorite_stories);
+
+        // Nút back dưới dạng ImageView
+        findViewById(R.id.imageViewBack).setOnClickListener(v -> onBackPressed());
 
         mAuth = FirebaseAuth.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();

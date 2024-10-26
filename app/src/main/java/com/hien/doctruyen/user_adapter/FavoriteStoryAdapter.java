@@ -40,8 +40,9 @@ public class FavoriteStoryAdapter extends RecyclerView.Adapter<FavoriteStoryAdap
 
         holder.titleTextView.setText(favoriteStory.getTitle());
 
+        // Hiển thị chương hiện tại cho người dùng, cộng thêm 1
         if (favoriteStory.getCurrentChapter() != null) {
-            holder.currentChapterTextView.setText("Chapter đang đọc: " + favoriteStory.getCurrentChapter());
+            holder.currentChapterTextView.setText("Chapter đang đọc: " + (favoriteStory.getCurrentChapter() + 1));
         } else {
             holder.currentChapterTextView.setText("Chapter đang đọc: N/A");
         }
@@ -57,10 +58,16 @@ public class FavoriteStoryAdapter extends RecyclerView.Adapter<FavoriteStoryAdap
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, ChapterDetailActivity.class);
             intent.putExtra("story", favoriteStory.getStory());
-            intent.putExtra("chapterIndex", favoriteStory.getCurrentChapter() != null ? favoriteStory.getCurrentChapter().intValue() : 0);
+
+            // Đảm bảo `chapterIndex` luôn là 0 hoặc cao hơn
+            int chapterIndex = favoriteStory.getCurrentChapter() != null ? Math.max(favoriteStory.getCurrentChapter().intValue() - 1, 0) : 0;
+            intent.putExtra("chapterIndex", chapterIndex);
+
             context.startActivity(intent);
         });
     }
+
+
 
     @Override
     public int getItemCount() {

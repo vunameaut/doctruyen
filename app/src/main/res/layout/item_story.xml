@@ -3,31 +3,37 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#FFFDE7"
+    android:backgroundTint="#E4D29B"
+    android:layout_margin="8dp"
+    android:elevation="4dp"
+    android:clipToOutline="true"
+    android:outlineProvider="background">
 
     <TextView
-        android:id="@+id/txt_story_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tiêu đề truyện"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        android:textColor="#000000"/>
+    android:id="@+id/txt_story_title"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Tiêu đề truyện"
+    android:textSize="20sp"
+    android:textStyle="bold"
+    android:textColor="#3E2723" />
 
     <TextView
-        android:id="@+id/txt_story_author"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Tác giả"
-        android:textSize="14sp"
-        android:textColor="#666666"/>
+    android:id="@+id/txt_story_author"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Tác giả"
+    android:textSize="16sp"
+    android:textColor="#5D4037" />
 
     <TextView
-        android:id="@+id/txt_story_genres"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Thể loại"
-        android:textSize="12sp"
-        android:textColor="#888888"/>
+    android:id="@+id/txt_story_genres"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Thể loại"
+    android:textSize="14sp"
+    android:textColor="#795548" />
 
-</LinearLayout>
+    </LinearLayout>

@@ -8,6 +8,11 @@
     <color name="colorPrimaryDark">#3700B3</color>
     <color name="colorAccent">#03DAC5</color>
     <color name="blue">#2196F3</color>
+    <!-- Màu phân chia -->
+    <color name="dividerColor">#DADADA</color> <!-- Xám nhạt cho đường phân chia -->
+
+    <!-- Màu nền tổng thể -->
+    <color name="backgroundGray">#F5F5F5</color> <!-- Xám nhạt làm nền -->
 
     <color name="primary">#6200EE</color>
     <color name="primary_light">#BB86FC</color>
@@ -44,6 +49,19 @@
     <color name="silver">#FFC0C0C0</color>
     <color name="gold">#FFFFD700</color>
 
+    <!-- Màu nền tổng thể -->
+    <color name="backgroundLight">#F5F5F5</color>
+
+
+    <!-- Màu sắc cho đường phân cách -->
+    <color name="colorDivider">#BDBDBD</color>
+
+    <!-- Màu nền cho các thẻ card hoặc item -->
+    <color name="backgroundCard">#FFFFFF</color>
+
+    <!-- Màu cho văn bản và icon nổi bật -->
+    <color name="textColorPrimary">#212121</color>
+    <color name="textColorSecondary">#757575</color>
     <color name="fuchsia">#FFFF00FF</color>
     <color name="navy">#FF000080</color>
     <color name="gray">#FF808080</color>

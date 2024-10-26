@@ -2,6 +2,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/backgroundGray"
     android:padding="16dp">
 
     <!-- Biểu tượng răng cưa ở góc phải trên cùng -->
@@ -13,18 +14,19 @@
         android:contentDescription="@string/settings"
         android:layout_alignParentEnd="true"
         android:layout_alignParentTop="true"
-        android:padding="8dp" />
+        android:padding="8dp"
+        android:tint="@color/colorPrimaryDark" />
 
-    <!-- Ảnh đại diện -->
+    <!-- Ảnh đại diện tròn -->
     <ImageView
         android:id="@+id/iv_profile"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
         android:scaleType="centerCrop"
         android:src="@drawable/default_profile"
         android:layout_below="@id/iv_settings"
-        android:layout_centerHorizontal="true"
         android:layout_marginTop="16dp"
+        android:layout_alignParentStart="true"
         android:contentDescription="@string/profile_image" />
 
     <!-- Tên người dùng -->
@@ -34,11 +36,19 @@
         android:layout_height="wrap_content"
         android:text="Username"
         android:textSize="20sp"
-        android:textColor="@color/black"
+        android:textStyle="bold"
+        android:textColor="@color/colorPrimary"
         android:layout_below="@id/iv_profile"
         android:layout_marginTop="16dp"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="16dp" />
+        android:layout_alignParentStart="true" />
+
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/tv_username"
+        android:layout_marginTop="8dp"
+        android:background="@color/dividerColor" />
 
     <!-- Email người dùng -->
     <TextView
@@ -46,25 +56,39 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Email"
+        android:textColor="@color/textColorSecondary"
         android:layout_below="@id/tv_username"
-        android:textColor="@color/black"
+        android:layout_marginTop="16dp"
+        android:layout_alignParentStart="true" />
+
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/tv_email"
         android:layout_marginTop="8dp"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="16dp" />
+        android:background="@color/dividerColor" />
 
     <!-- Số điện thoại -->
     <TextView
         android:id="@+id/tv_phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@id/tv_email"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
         android:text="Số Điện Thoại: "
-        android:textColor="@color/black" />
+        android:textColor="@color/textColorSecondary"
+        android:layout_below="@id/tv_email"
+        android:layout_marginTop="16dp"
+        android:layout_alignParentStart="true" />
 
-    <!-- Nút truyện yêu thích với tùy chỉnh -->
+    <!-- Divider -->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/tv_phone"
+        android:layout_marginTop="8dp"
+        android:background="@color/dividerColor" />
+
+    <!-- Nút truyện yêu thích -->
     <Button
         android:id="@+id/btn_favorite_stories"
         android:layout_width="wrap_content"
@@ -76,10 +100,6 @@
         android:padding="12dp"
         android:layout_below="@id/tv_phone"
         android:layout_marginTop="16dp"
-        android:layout_alignParentStart="true"
-        android:layout_marginStart="16dp"/>
-
-
-
+        android:layout_alignParentStart="true" />
 
 </RelativeLayout>

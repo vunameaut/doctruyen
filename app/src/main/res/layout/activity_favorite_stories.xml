@@ -5,6 +5,15 @@
     android:orientation="vertical"
     android:padding="16dp">
 
+    <!-- ImageView để làm nút Back -->
+    <ImageView
+        android:id="@+id/imageViewBack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_back"
+        android:contentDescription="Back"
+        android:layout_gravity="start" />
+
     <!-- Tiêu đề của Activity -->
     <TextView
         android:id="@+id/textViewTitle"

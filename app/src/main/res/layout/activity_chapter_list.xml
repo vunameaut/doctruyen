@@ -4,15 +4,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context=".admin.ChapterListActivity">
+    tools:context=".admin.ChapterListActivity"
+    android:background="#FAFAFA"> <!-- Màu nền xám nhạt -->
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-        android:elevation="4dp"/>
+        android:background="#FF8A65"
+    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    android:elevation="4dp" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -28,16 +29,22 @@
             android:layout_height="0dp"
             android:layout_marginTop="66dp"
             android:layout_weight="1"
-            android:padding="16dp" />
+            android:padding="16dp"
+            android:background="#FFFFFF"
+        android:elevation="2dp" />
 
-        <!-- ImageView để thêm chương mới nằm ở dưới cùng -->
+        <!-- Nút thêm chương mới nằm ở dưới cùng -->
         <ImageView
             android:id="@+id/img_add_chapter"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
             android:layout_gravity="end"
             android:layout_margin="16dp"
             android:contentDescription="Add Chapter"
-            android:src="@drawable/ic_add" />
+            android:src="@drawable/ic_add"
+            android:tint="#FF8A65"
+            android:background="@drawable/rounded_button_background"
+            android:padding="10dp"
+            android:elevation="4dp" />
     </LinearLayout>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

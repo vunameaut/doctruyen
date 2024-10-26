@@ -41,7 +41,7 @@ public class StoryAdapter extends RecyclerView.Adapter<StoryAdapter.StoryViewHol
         holder.titleTextView.setText(history.getTitle());
 
         if (history.getCurrentChapter() != null) {
-            holder.currentChapterTextView.setText("Chapter đang đọc: " + history.getCurrentChapter());
+            holder.currentChapterTextView.setText("Chapter đang đọc: " + (history.getCurrentChapter() + 1));
         } else {
             holder.currentChapterTextView.setText("Chapter đang đọc: N/A");
         }
