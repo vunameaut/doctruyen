@@ -51,8 +51,17 @@ public class login extends AppCompatActivity {
         loginButton = findViewById(R.id.sign_in_button);
         rememberMeCheckBox = findViewById(R.id.remember_me_checkbox);
 
+        TextView forgotPassword = findViewById(R.id.forgot_password);
+
         // Khởi tạo SharedPreferences để lưu thông tin đăng nhập
         sharedPreferences = getSharedPreferences(PREFS_NAME, MODE_PRIVATE);
+
+
+        forgotPassword.setOnClickListener(v -> {
+            // Redirect to ForgotPasswordActivity
+            Intent intent = new Intent(login.this, ForgotPasswordActivity.class);
+            startActivity(intent);
+        });
 
         // Kiểm tra trạng thái đăng nhập trước đó
         FirebaseUser currentUser = mAuth.getCurrentUser();

@@ -42,6 +42,12 @@
             android:name=".user.ChapterDetailActivity"
             android:exported="false" />
         <activity
+            android:name=".user.ChangePasswordActivity"
+            android:exported="false" />
+        <activity
+            android:name=".ForgotPasswordActivity"
+            android:exported="false" />
+        <activity
             android:name=".user.StoryDetailActivity"
             android:exported="false" />
         <activity
