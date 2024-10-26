@@ -3,7 +3,6 @@ package com.hien.doctruyen.item;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import java.io.Serializable;
 
 public class Story implements Serializable {
@@ -13,8 +12,9 @@ public class Story implements Serializable {
     private String description;     // Mô tả truyện
     private List<String> genres;    // Danh sách các thể loại truyện
     private String imageUrl;        // URL của ảnh bìa
-    private Map<String, Chapter> chapters;  // Danh sách các chương (Map với key là ID chương)
+    private Map<String, Chapter> chapters;  // Danh sách các chương
     private String uid;             // ID người dùng đăng truyện
+    private boolean isFavorite;     // Đánh dấu nếu truyện thuộc danh sách yêu thích
 
     // Constructor trống cần thiết cho Firebase
     public Story() {
@@ -31,6 +31,17 @@ public class Story implements Serializable {
         this.imageUrl = imageUrl;
         this.chapters = chapters;
         this.uid = uid;
+        this.isFavorite = false; // Mặc định không phải là truyện yêu thích
+    }
+
+    // Constructor cho trường hợp tạo đối tượng Favorite
+    public Story(String id, String title, String author, String description, String imageUrl, boolean isFavorite) {
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.description = description;
+        this.imageUrl = imageUrl;
+        this.isFavorite = isFavorite;
     }
 
     // Getter và Setter cho các thuộc tính
@@ -66,7 +77,6 @@ public class Story implements Serializable {
         this.description = description;
     }
 
-    // Kiểm tra và chuyển đổi genres nếu cần
     public List<String> getGenres() {
         if (genres == null) {
             genres = new ArrayList<>();
@@ -75,13 +85,11 @@ public class Story implements Serializable {
     }
 
     public void setGenres(Object genres) {
-        // Nếu dữ liệu là String, chuyển nó thành List<String>
         if (genres instanceof String) {
             List<String> genreList = new ArrayList<>();
             genreList.add((String) genres);
             this.genres = genreList;
         } else if (genres instanceof List) {
-            // Nếu đã là List<String>, gán trực tiếp
             this.genres = (List<String>) genres;
         } else {
             this.genres = new ArrayList<>();
@@ -110,5 +118,14 @@ public class Story implements Serializable {
 
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    // Getter và Setter cho trạng thái yêu thích
+    public boolean isFavorite() {
+        return isFavorite;
+    }
+
+    public void setFavorite(boolean favorite) {
+        isFavorite = favorite;
     }
 }

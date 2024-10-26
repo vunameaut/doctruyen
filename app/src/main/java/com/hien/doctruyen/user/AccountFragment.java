@@ -58,6 +58,7 @@ public class AccountFragment extends Fragment {
     private TextView tvUsername, tvEmail, tvPhone;
     private ImageView ivProfile, ivSettings; // Thêm ivSettings
     private FirebaseAuth mAuth;
+    private Button btnFavoriteStories;
 
     private ActivityResultLauncher<Intent> imagePickerLauncher;
     private ActivityResultLauncher<String> requestPermissionLauncher;
@@ -84,6 +85,7 @@ public class AccountFragment extends Fragment {
         tvPhone = view.findViewById(R.id.tv_phone);
         ivProfile = view.findViewById(R.id.iv_profile);
         ivSettings = view.findViewById(R.id.iv_settings);
+        btnFavoriteStories = view.findViewById(R.id.btn_favorite_stories);
 
         // Khởi tạo Image Picker Launcher
         imagePickerLauncher = registerForActivityResult(
@@ -117,13 +119,18 @@ public class AccountFragment extends Fragment {
             }
         });
 
-
+        // Thiết lập sự kiện cho nút truyện yêu thích
+        btnFavoriteStories.setOnClickListener(v -> openFavoriteStoriesActivity());
 
 
         // Hiển thị thông tin người dùng
         displayUserInfo();
 
         return view;
+    }
+    private void openFavoriteStoriesActivity() {
+        Intent intent = new Intent(getActivity(), FavoriteStoriesActivity.class);
+        startActivity(intent);
     }
 
     /**
@@ -301,24 +308,24 @@ public class AccountFragment extends Fragment {
             return;
         }
 
-        // Reference to the current user in the database
+        // Tham chiếu đến người dùng hiện tại trong cơ sở dữ liệu
         DatabaseReference userRef = FirebaseDatabase.getInstance().getReference("users").child(currentUser.getUid());
         userRef.get().addOnCompleteListener(task -> {
             if (task.isSuccessful() && task.getResult() != null) {
                 DataSnapshot snapshot = task.getResult();
 
-                // Retrieve and set username, email, phone, and avatar
+                // Lấy thông tin username, email, phone hoặc sdt, và avatar
                 String username = snapshot.child("username").getValue(String.class);
                 String email = snapshot.child("email").getValue(String.class);
-                String phone = snapshot.child("sdt").getValue(String.class);
+                String phone = snapshot.hasChild("sdt") ? snapshot.child("sdt").getValue(String.class) : snapshot.child("phone").getValue(String.class);
                 String avatarUrl = snapshot.child("avatar").getValue(String.class);
 
-                // Display information or default if null
+                // Hiển thị thông tin hoặc giá trị mặc định nếu null
                 tvUsername.setText("Name: " + (username != null ? username : "Không có tên"));
                 tvEmail.setText("Email: " + (email != null ? email : "Không có email"));
                 tvPhone.setText("SĐT: " + (phone != null ? phone : "Không có số điện thoại"));
 
-                // Load avatar image
+                // Load ảnh đại diện
                 if (avatarUrl != null) {
                     Picasso.get().load(avatarUrl).transform(new CircleTransform()).into(ivProfile);
                 } else {

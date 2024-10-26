@@ -43,5 +43,6 @@
     <string name="email">Email</string>
     <string name="phone_number">Số điện thoại\n</string>
     <string name="address">Địa chỉ</string>
+    <string name="underline_favorite_stories">Truyện yêu thích</string>
 
 </resources>

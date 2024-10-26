@@ -57,11 +57,29 @@
         android:id="@+id/tv_phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="SĐT"
         android:layout_below="@id/tv_email"
-        android:textColor="@color/black"
-        android:layout_marginTop="8dp"
         android:layout_alignParentStart="true"
-        android:layout_marginStart="16dp" />
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:text="Số Điện Thoại: "
+        android:textColor="@color/black" />
+
+    <!-- Nút truyện yêu thích với tùy chỉnh -->
+    <Button
+        android:id="@+id/btn_favorite_stories"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Truyện yêu thích"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:background="@drawable/custom_button_background"
+        android:padding="12dp"
+        android:layout_below="@id/tv_phone"
+        android:layout_marginTop="16dp"
+        android:layout_alignParentStart="true"
+        android:layout_marginStart="16dp"/>
+
+
+
 
 </RelativeLayout>

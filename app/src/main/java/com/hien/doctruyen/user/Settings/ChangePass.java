@@ -9,7 +9,6 @@ import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
 
-
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.EmailAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
@@ -40,6 +39,7 @@ public class ChangePass extends AppCompatActivity {
                 finish();
             }
         });
+
         // Xử lý sự kiện click vào nút đổi mật khẩu
         btnChangePassword.setOnClickListener(v -> {
             String currentPassword = etCurrentPassword.getText().toString();
@@ -70,7 +70,7 @@ public class ChangePass extends AppCompatActivity {
                     user.updatePassword(newPassword).addOnCompleteListener(updateTask -> {
                         if (updateTask.isSuccessful()) {
                             Toast.makeText(ChangePass.this, "Đổi mật khẩu thành công", Toast.LENGTH_SHORT).show();
-                            // Có thể điều hướng người dùng sang màn hình khác hoặc thoát
+                            finish(); // Tự động đóng Activity sau khi đổi mật khẩu thành công
                         } else {
                             // Xử lý lỗi đổi mật khẩu thất bại
                             String errorMessage = updateTask.getException().getMessage();
@@ -92,5 +92,4 @@ public class ChangePass extends AppCompatActivity {
             });
         }
     }
-
 }

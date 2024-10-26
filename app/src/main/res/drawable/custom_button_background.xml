@@ -1,15 +1,15 @@
-<?xml version="1.0" encoding="utf-8"?>
+<!-- res/drawable/custom_button_background.xml -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_pressed="true">
         <shape>
-            <solid android:color="@color/button_pressed_color" />
-            <corners android:radius="8dp" />
+            <solid android:color="#005B96" /> <!-- Màu khi nhấn -->
+            <corners android:radius="12dp" />
         </shape>
     </item>
     <item>
         <shape>
-            <solid android:color="@color/primary_color" />
-            <corners android:radius="8dp" />
+            <solid android:color="#007ACC" /> <!-- Màu mặc định -->
+            <corners android:radius="12dp" />
         </shape>
     </item>
 </selector>

@@ -3,10 +3,10 @@ package com.hien.doctruyen.user.Settings;
 import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
-
 
 import com.hien.doctruyen.R;
 
@@ -32,29 +32,25 @@ public class CongDong extends AppCompatActivity {
 
         tvTerms = findViewById(R.id.tvTerms);
         String fileContent = readFromAssets();
-        tvTerms.setText(fileContent);
-        tvTerms.setTextColor(getResources().getColor(R.color.black));
+        if (fileContent.isEmpty()) {
+            Toast.makeText(this, "Không thể tải nội dung", Toast.LENGTH_SHORT).show();
+        } else {
+            tvTerms.setText(fileContent);
+            tvTerms.setTextColor(getResources().getColor(R.color.black));
+        }
     }
 
     private String readFromAssets() {
         StringBuilder text = new StringBuilder();
 
-        try {
-            InputStream is = getAssets().open(CongDong.FILE_NAME);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(is));
+        try (InputStream is = getAssets().open(FILE_NAME);
+             BufferedReader reader = new BufferedReader(new InputStreamReader(is))) {
 
             String line;
-            while (true) {
-                try {
-                    if ((line = reader.readLine()) == null) break;
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
+            while ((line = reader.readLine()) != null) {
                 text.append(line).append("\n");
             }
 
-            reader.close();
-            is.close();
         } catch (IOException e) {
             e.printStackTrace();
         }
