@@ -36,8 +36,7 @@ import java.util.List;
 
 public class ChapterDetailActivity extends AppCompatActivity {
     private TextView tvChapterTitle, tvChapterContent, tvStoryTitle;
-    private Button btnPrevious, btnNext;
-    private ImageView ivMenu;
+    private ImageView ivPrevious, ivNext, ivMenu;
     private DatabaseReference userRef;
     private String userId;
     private Story story;
@@ -54,11 +53,11 @@ public class ChapterDetailActivity extends AppCompatActivity {
         tvChapterTitle = findViewById(R.id.tv_chapter_title);
         tvChapterContent = findViewById(R.id.tv_chapter_content);
         tvStoryTitle = findViewById(R.id.tv_story_title);
-        btnPrevious = findViewById(R.id.btn_previous_chapter);
-        btnNext = findViewById(R.id.btn_next_chapter);
+        ivPrevious = findViewById(R.id.iv_previous_chapter);
+        ivNext = findViewById(R.id.iv_next_chapter);
         ivMenu = findViewById(R.id.iv_menu);
 
-        // Lấy dữ liệu từ Intent
+        // Các phần khởi tạo dữ liệu và sự kiện
         story = (Story) getIntent().getSerializableExtra("story");
 
         if (story == null) {
@@ -70,7 +69,6 @@ public class ChapterDetailActivity extends AppCompatActivity {
         currentChapterIndex = getIntent().getIntExtra("chapterIndex", 0);
         tvStoryTitle.setText(story.getTitle());
 
-        // Khởi tạo FirebaseAuth và DatabaseReference
         FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
         if (currentUser != null) {
             userId = currentUser.getUid();
@@ -80,19 +78,17 @@ public class ChapterDetailActivity extends AppCompatActivity {
                     .child(story.getId());
         } else {
             Toast.makeText(this, "Vui lòng đăng nhập để lưu tiến trình đọc.", Toast.LENGTH_SHORT).show();
-            finish();  // Đóng Activity nếu chưa đăng nhập
+            finish();
             return;
         }
 
-        // Lấy danh sách chapter và sắp xếp chúng
         chapterList.addAll(story.getChapters().values());
         sortChapters();
         loadChapter(currentChapterIndex);
-
         updateChapterNavigation();
 
-        // Xử lý sự kiện khi nhấn nút chuyển chapter
-        btnPrevious.setOnClickListener(v -> {
+        // Xử lý sự kiện khi nhấn các ImageView chuyển chapter
+        ivPrevious.setOnClickListener(v -> {
             if (currentChapterIndex > 0) {
                 currentChapterIndex--;
                 loadChapter(currentChapterIndex);
@@ -100,7 +96,7 @@ public class ChapterDetailActivity extends AppCompatActivity {
             }
         });
 
-        btnNext.setOnClickListener(v -> {
+        ivNext.setOnClickListener(v -> {
             if (currentChapterIndex < chapterList.size() - 1) {
                 currentChapterIndex++;
                 loadChapter(currentChapterIndex);
@@ -119,8 +115,8 @@ public class ChapterDetailActivity extends AppCompatActivity {
     }
 
     private void updateChapterNavigation() {
-        btnPrevious.setVisibility(currentChapterIndex == 0 ? View.INVISIBLE : View.VISIBLE);
-        btnNext.setVisibility(currentChapterIndex == chapterList.size() - 1 ? View.INVISIBLE : View.VISIBLE);
+        ivPrevious.setVisibility(currentChapterIndex == 0 ? View.INVISIBLE : View.VISIBLE);
+        ivNext.setVisibility(currentChapterIndex == chapterList.size() - 1 ? View.INVISIBLE : View.VISIBLE);
     }
 
     private void sortChapters() {
