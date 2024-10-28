@@ -33,6 +33,7 @@ public class login extends AppCompatActivity {
     private static final String PREFS_NAME = "LoginPrefs";
 
     private DatabaseReference mDatabase;
+    private boolean isLoggingOut = false; // Thêm biến kiểm tra đăng xuất
 
     private FirebaseAuth.AuthStateListener authStateListener; // Khai báo lắng nghe trạng thái xác thực
 
@@ -101,7 +102,7 @@ public class login extends AppCompatActivity {
         // Khởi tạo lắng nghe trạng thái xác thực
         authStateListener = firebaseAuth -> {
             FirebaseUser user = firebaseAuth.getCurrentUser();
-            if (user == null) {
+            if (user == null && !isLoggingOut) { // Kiểm tra biến isLoggingOut
                 // Người dùng đã bị đăng xuất
                 Toast.makeText(login.this, "Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.", Toast.LENGTH_SHORT).show();
             }
@@ -142,7 +143,6 @@ public class login extends AppCompatActivity {
             }
         });
     }
-
 
     // Phương thức xử lý đăng nhập người dùng
     private void loginUser() {
@@ -223,7 +223,6 @@ public class login extends AppCompatActivity {
                 });
     }
 
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -236,5 +235,12 @@ public class login extends AppCompatActivity {
         if (authStateListener != null) {
             mAuth.removeAuthStateListener(authStateListener); // Xóa lắng nghe trạng thái xác thực
         }
+    }
+
+    // Phương thức đăng xuất
+    private void logoutUser() {
+        isLoggingOut = true; // Cập nhật trạng thái đăng xuất
+        mAuth.signOut();
+        Toast.makeText(login.this, "Đăng xuất thành công.", Toast.LENGTH_SHORT).show();
     }
 }
