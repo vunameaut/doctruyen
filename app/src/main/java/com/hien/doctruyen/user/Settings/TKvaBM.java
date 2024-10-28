@@ -75,7 +75,7 @@ public class TKvaBM extends AppCompatActivity {
         btnBack = findViewById(R.id.ivBack);
     }
 
-    // Phương thức hiển thị thông tin người dùng từ Firebase
+
     // Phương thức hiển thị thông tin người dùng từ Firebase
     private void showInfo() {
         // Lấy uid từ SharedPreferences
@@ -92,13 +92,13 @@ public class TKvaBM extends AppCompatActivity {
                     // Lấy dữ liệu từ Firebase
                     String user = snapshot.child("username").getValue(String.class);
                     String email = snapshot.child("email").getValue(String.class);
-                    String phone = snapshot.child("phone").getValue(String.class);
+                    String sdt = snapshot.child("sdt").getValue(String.class);
 
                     // Kiểm tra và hiển thị thông tin
-                    if (user != null && email != null && phone != null) {
+                    if (user != null && email != null && sdt != null) {
                         viewUser.setHint(user);
                         viewEmail.setHint(email);
-                        viewPhone.setHint(phone);
+                        viewPhone.setHint(sdt);
                     } else {
                         Toast.makeText(TKvaBM.this, "Không tìm thấy thông tin người dùng", Toast.LENGTH_SHORT).show();
                     }

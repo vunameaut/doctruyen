@@ -34,7 +34,7 @@ public class myProfile extends AppCompatActivity {
     private static final int PICK_IMAGE_REQUEST = 1;
 
     TextView viewUser;
-    TextInputEditText editUser, editEmail, editPhone;
+    TextInputEditText editUser, editEmail, editsdt;
     LinearLayout linearLayout;
     Button btnCancel, btnSave;
     ImageView btnBack, btnAvatar;
@@ -46,7 +46,7 @@ public class myProfile extends AppCompatActivity {
 
     boolean isDataChanged = false;
     boolean isAvatarChanged = false;
-    String avatarUrl, currentUser, currentEmail, currentPhone;
+    String avatarUrl, currentUser, currentEmail, currentsdt;
     Uri imageUri;
 
     @Override
@@ -87,7 +87,7 @@ public class myProfile extends AppCompatActivity {
         viewUser = findViewById(R.id.tv_user);
         editUser = findViewById(R.id.et_user);
         editEmail = findViewById(R.id.et_email);
-        editPhone = findViewById(R.id.et_numPhone);
+        editsdt = findViewById(R.id.et_numPhone);
         linearLayout = findViewById(R.id.ll_btn);
         btnCancel = findViewById(R.id.btn_cancel);
         btnSave = findViewById(R.id.btn_save);
@@ -112,12 +112,12 @@ public class myProfile extends AppCompatActivity {
                 avatarUrl = snapshot.child("avatar").getValue(String.class);
                 currentUser = snapshot.child("username").getValue(String.class);
                 currentEmail = snapshot.child("email").getValue(String.class);
-                currentPhone = snapshot.child("phone").getValue(String.class);
+                currentsdt = snapshot.child("sdt").getValue(String.class);
 
                 viewUser.setText(currentUser);
                 editUser.setText(currentUser);
                 editEmail.setText(currentEmail);
-                editPhone.setText(currentPhone);
+                editsdt.setText(currentsdt);
 
                 if (avatarUrl != null && !avatarUrl.isEmpty()) {
                     setAvatarImage(Uri.parse(avatarUrl));
@@ -144,7 +144,7 @@ public class myProfile extends AppCompatActivity {
 
         dbRef.child(uid).child("username").setValue(editUser.getText().toString());
         dbRef.child(uid).child("email").setValue(editEmail.getText().toString());
-        dbRef.child(uid).child("phone").setValue(editPhone.getText().toString());
+        dbRef.child(uid).child("sdt").setValue(editsdt.getText().toString());
 
         if (isAvatarChanged && imageUri != null) {
             uploadImageToFirebase(imageUri, uid);
@@ -161,7 +161,7 @@ public class myProfile extends AppCompatActivity {
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 boolean hasChanges = !editUser.getText().toString().equals(currentUser) ||
                         !editEmail.getText().toString().equals(currentEmail) ||
-                        !editPhone.getText().toString().equals(currentPhone);
+                        !editsdt.getText().toString().equals(currentsdt);
 
                 if (hasChanges) {
                     isDataChanged = true;
@@ -178,7 +178,7 @@ public class myProfile extends AppCompatActivity {
 
         editUser.addTextChangedListener(textWatcher);
         editEmail.addTextChangedListener(textWatcher);
-        editPhone.addTextChangedListener(textWatcher);
+        editsdt.addTextChangedListener(textWatcher);
     }
 
     private void showConfirm() {
@@ -220,7 +220,7 @@ public class myProfile extends AppCompatActivity {
     private void clearFocus() {
         editUser.clearFocus();
         editEmail.clearFocus();
-        editPhone.clearFocus();
+        editsdt.clearFocus();
 
         InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
         if (imm != null) {

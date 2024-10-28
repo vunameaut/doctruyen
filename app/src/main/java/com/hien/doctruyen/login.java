@@ -143,6 +143,7 @@ public class login extends AppCompatActivity {
         });
     }
 
+
     // Phương thức xử lý đăng nhập người dùng
     private void loginUser() {
         String email = emailEditText.getText().toString().trim();
@@ -167,45 +168,52 @@ public class login extends AppCompatActivity {
                         // Đăng nhập thành công
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null) {
-                            // Kiểm tra thông tin người dùng trong Firebase Realtime Database
-                            mDatabase.child("users").child(user.getUid()).get().addOnCompleteListener(databaseTask -> {
-                                if (databaseTask.isSuccessful()) {
-                                    DataSnapshot snapshot = databaseTask.getResult();
-                                    if (snapshot.exists()) {
-                                        // Lấy thông tin vai trò của người dùng
-                                        String role = snapshot.child("role").getValue(String.class);
-                                        Boolean isActive = snapshot.child("isActive").getValue(Boolean.class);
+                            // Kiểm tra nếu email của người dùng đã được xác thực
+                            if (user.isEmailVerified()) {
+                                // Kiểm tra thông tin người dùng trong Firebase Realtime Database
+                                mDatabase.child("users").child(user.getUid()).get().addOnCompleteListener(databaseTask -> {
+                                    if (databaseTask.isSuccessful()) {
+                                        DataSnapshot snapshot = databaseTask.getResult();
+                                        if (snapshot.exists()) {
+                                            // Lấy thông tin vai trò của người dùng
+                                            String role = snapshot.child("role").getValue(String.class);
+                                            Boolean isActive = snapshot.child("isActive").getValue(Boolean.class);
 
-                                        if (isActive == null || isActive) {
-                                            // Chuyển đến màn hình tương ứng
-                                            Intent intent;
-                                            if ("admin".equals(role)) {
-                                                Toast.makeText(login.this, "Đăng nhập với quyền quản trị!", Toast.LENGTH_SHORT).show();
-                                                intent = new Intent(login.this, AdminActivity.class);
+                                            if (isActive == null || isActive) {
+                                                // Chuyển đến màn hình tương ứng
+                                                Intent intent;
+                                                if ("admin".equals(role)) {
+                                                    Toast.makeText(login.this, "Đăng nhập với quyền quản trị!", Toast.LENGTH_SHORT).show();
+                                                    intent = new Intent(login.this, AdminActivity.class);
+                                                } else {
+                                                    Toast.makeText(login.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
+                                                    intent = new Intent(login.this, main.class);
+                                                }
+                                                startActivity(intent);
+                                                finish();
+
+                                                // Lưu thông tin đăng nhập vào SharedPreferences
+                                                SharedPreferences.Editor editor = sharedPreferences.edit();
+                                                editor.putString("uid", user.getUid());  // Lưu UID
+                                                editor.putBoolean("remember", rememberMeCheckBox.isChecked());  // Lưu trạng thái "Nhớ tôi"
+                                                editor.apply();
                                             } else {
-                                                Toast.makeText(login.this, "Đăng nhập thành công!", Toast.LENGTH_SHORT).show();
-                                                intent = new Intent(login.this, main.class);
+                                                // Nếu tài khoản bị khóa hoặc không hoạt động
+                                                Toast.makeText(login.this, "Tài khoản của bạn đã bị vô hiệu hóa.", Toast.LENGTH_SHORT).show();
+                                                mAuth.signOut(); // Đăng xuất nếu tài khoản không hoạt động
                                             }
-                                            startActivity(intent);
-                                            finish();
-
-                                            // Lưu thông tin đăng nhập vào SharedPreferences
-                                            SharedPreferences.Editor editor = sharedPreferences.edit();
-                                            editor.putString("uid", user.getUid());  // Lưu UID
-                                            editor.putBoolean("remember", rememberMeCheckBox.isChecked());  // Lưu trạng thái "Nhớ tôi"
-                                            editor.apply();
                                         } else {
-                                            // Nếu tài khoản bị khóa hoặc không hoạt động
-                                            Toast.makeText(login.this, "Tài khoản của bạn đã bị vô hiệu hóa.", Toast.LENGTH_SHORT).show();
-                                            mAuth.signOut(); // Đăng xuất nếu tài khoản không hoạt động
+                                            Toast.makeText(login.this, "Không tìm thấy thông tin người dùng!", Toast.LENGTH_SHORT).show();
                                         }
                                     } else {
-                                        Toast.makeText(login.this, "Không tìm thấy thông tin người dùng!", Toast.LENGTH_SHORT).show();
+                                        Toast.makeText(login.this, "Lỗi khi truy vấn dữ liệu người dùng: " + databaseTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
                                     }
-                                } else {
-                                    Toast.makeText(login.this, "Lỗi khi truy vấn dữ liệu người dùng: " + databaseTask.getException().getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            });
+                                });
+                            } else {
+                                // Thông báo nếu email chưa được xác thực
+                                Toast.makeText(login.this, "Email của bạn chưa được xác thực. Vui lòng kiểm tra email của bạn để xác thực.", Toast.LENGTH_LONG).show();
+                                mAuth.signOut(); // Đăng xuất nếu email chưa được xác thực
+                            }
                         }
                     } else {
                         // Đăng nhập thất bại
@@ -214,6 +222,7 @@ public class login extends AppCompatActivity {
                     }
                 });
     }
+
 
     @Override
     protected void onStart() {
