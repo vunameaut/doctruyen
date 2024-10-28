@@ -61,52 +61,46 @@ public class signup extends AppCompatActivity {
         String email = emailEditText.getText().toString().trim();
         String password = passwordEditText.getText().toString().trim();
         String confirmPassword = confirmPasswordEditText.getText().toString().trim();
-        String phone = phoneEditText.getText().toString().trim(); // Lấy số điện thoại
+        String phone = phoneEditText.getText().toString().trim();
 
-        // Kiểm tra nếu thông tin chưa đầy đủ
         if (username.isEmpty() || email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() || phone.isEmpty()) {
             Toast.makeText(signup.this, "Vui lòng nhập đầy đủ thông tin", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Kiểm tra nếu mật khẩu không khớp
         if (!password.equals(confirmPassword)) {
             Toast.makeText(signup.this, "Mật khẩu không khớp", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        // Hiển thị hộp thoại đăng ký
         ProgressDialog progressDialog = new ProgressDialog(this);
         progressDialog.setMessage("Đang đăng ký...");
         progressDialog.show();
 
-        // Đăng ký người dùng mới với email và mật khẩu
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, task -> {
                     progressDialog.dismiss();
                     if (task.isSuccessful()) {
-                        // Đăng ký thành công, lưu thông tin người dùng vào Firebase Realtime Database
                         FirebaseUser user = mAuth.getCurrentUser();
                         if (user != null) {
-                            // Lưu thông tin người dùng vào Firebase với cấu trúc yêu cầu
                             Map<String, Object> userProfile = new HashMap<>();
                             userProfile.put("uid", user.getUid());
                             userProfile.put("username", username);
                             userProfile.put("email", email);
-                            userProfile.put("sdt", phone); // Thêm số điện thoại
-                            userProfile.put("avatar", "url_to_avatar_image"); // Giả định avatar URL, có thể thay thế sau
+                            userProfile.put("sdt", phone);
+                            userProfile.put("avatar", "url_to_avatar_image");
                             userProfile.put("role", "user");
-                            userProfile.put("favorites", new ArrayList<>()); // Danh sách truyện yêu thích rỗng
+                            userProfile.put("favorites", new ArrayList<>());
                             Map<String, Object> readingProgress = new HashMap<>();
-                            userProfile.put("reading_progress", readingProgress); // Trạng thái đọc trống
+                            userProfile.put("reading_progress", readingProgress);
 
                             mDatabase.child("users").child(user.getUid()).setValue(userProfile)
                                     .addOnCompleteListener(databaseTask -> {
                                         if (databaseTask.isSuccessful()) {
-                                            // Gửi email xác thực cho người dùng
                                             user.sendEmailVerification().addOnCompleteListener(verificationTask -> {
                                                 if (verificationTask.isSuccessful()) {
                                                     Toast.makeText(signup.this, "Đăng ký thành công! Vui lòng kiểm tra email để xác thực tài khoản.", Toast.LENGTH_LONG).show();
+                                                    mAuth.signOut(); // Đăng xuất sau khi gửi email xác thực
                                                     Intent intent = new Intent(signup.this, login.class);
                                                     startActivity(intent);
                                                     finish();
@@ -120,9 +114,9 @@ public class signup extends AppCompatActivity {
                                     });
                         }
                     } else {
-                        // Đăng ký thất bại
                         Toast.makeText(signup.this, "Đăng ký thất bại: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
     }
+
 }

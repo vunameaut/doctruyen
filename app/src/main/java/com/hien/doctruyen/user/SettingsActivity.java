@@ -41,7 +41,7 @@ public class SettingsActivity extends AppCompatActivity {
         // Đăng ký sự kiện nhấn
         LoadActivity();
 
-        btnDangXuat.setOnClickListener(v -> logout()); // Sử dụng hàm logout
+        btnDangXuat.setOnClickListener(v -> logoutUser()); // Use unified logout method
     }
 
     // Ánh xạ các thành phần giao diện
@@ -66,8 +66,8 @@ public class SettingsActivity extends AppCompatActivity {
         btnGioiThieu.setOnClickListener(view -> startActivity(new Intent(this, GioiThieu.class)));
     }
 
-    // Hàm đăng xuất người dùng và xóa thông tin đăng nhập
-    private void logout() {
+    // Unified logout method to clear user data and sign out
+    private void logoutUser() {
         SharedPreferences preferences = getSharedPreferences("LoginPrefs", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = preferences.edit();
         editor.clear();  // Clear all stored data
@@ -75,16 +75,22 @@ public class SettingsActivity extends AppCompatActivity {
 
         FirebaseAuth.getInstance().signOut();
 
+        Toast.makeText(this, "Đã đăng xuất thành công!", Toast.LENGTH_SHORT).show();
         Intent intent = new Intent(this, login.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(intent);
-        finish(); // Kết thúc Activity hiện tại
-    }
-
-    // Hàm chỉnh sửa hồ sơ người dùng
-    private void editUserProfile() {
-        Toast.makeText(this, "Chức năng chỉnh sửa hồ sơ đang được phát triển.", Toast.LENGTH_SHORT).show();
+        finish(); // End current activity
     }
 
 
+    // Check if permissions rationale should be shown
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    private boolean shouldShowRequestPermissionRationaleForCurrentPermission() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            return shouldShowRequestPermissionRationale(android.Manifest.permission.READ_MEDIA_IMAGES);
+        } else {
+            return shouldShowRequestPermissionRationale(android.Manifest.permission.READ_EXTERNAL_STORAGE) ||
+                    shouldShowRequestPermissionRationale(android.Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+    }
 }
